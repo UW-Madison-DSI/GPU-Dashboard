@@ -1,0 +1,8 @@
++---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|  GPU     PID     USER    GPU MEM  %CPU  %MEM      TIME  COMMAND                                                                                               |
+|    1  368360  larry   30490MiB   3.0   0.0  18:26:41  python                                                                                                |
+|    1 3356952  moe    4242MiB  44.2   0.1  03:50:47  python train_score_direct_sum_reverse_mask.py --config ./conf/toy_score_general_sum_reverse.yaml      |
+|    2 3812448     curly    3916MiB  21.7   0.3     05:40  /data/yguo/conda_env/toxicity/bin/python -m ipykernel_launcher --f=/u/y/g/yguo/.local/share/jupyter/  |
+|    3  365663  curly   30490MiB   3.0   0.0  18:27:53  python                                                                                                |
+|    3 3373306  moe    4092MiB  44.6   0.1  03:45:59  python train_score_direct_sum_reverse_mask.py --config ./conf/toy_score_general_sum_reverse.yaml      |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------+

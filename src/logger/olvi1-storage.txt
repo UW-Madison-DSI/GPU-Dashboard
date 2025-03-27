@@ -1,0 +1,10 @@
+1.7T	/data/milawang
+1.2T	/data/mucai_backup
+1.2T	/data/docker
+959G	/data/yzeng58
+548G	/data/rouhiainen
+533G	/data/changho
+529G	/data/s_setup
+502G	/data/yguo
+492G	/data/linbo
+396G	/data/jifan

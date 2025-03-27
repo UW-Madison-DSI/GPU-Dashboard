@@ -1,0 +1,132 @@
+/******************************************************************************\
+|                                                                              |
+|                                  styles.css                                  |
+|                                                                              |
+|******************************************************************************|
+|                                                                              |
+|        This defines the visual styles used in this application.              |
+|                                                                              |
+|        Author(s): Abe Megahed                                                |
+|                                                                              |
+|        This file is subject to the terms and conditions defined in           |
+|        'LICENSE.md', which is part of this source code distribution.         |
+|                                                                              |
+|******************************************************************************|
+|     Copyright (C) 2025, Data Science Institute, University of Wisconsin      |
+\******************************************************************************/
+
+body {
+	display: flex;
+	flex-direction: column;
+	font-family: 'Red Hat Text', sans-serif;
+	padding: 20px;
+	--primary-color: #c00000;
+	--primary-hover-color: #900000;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.header {
+	text-align: center;
+}
+
+.logo {
+	height: 40px;
+	float: left;
+}
+
+.title {
+	font-size: 24px;
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	float: left;
+	margin: 0 20px;
+	margin-right: 40px;
+	color: var(--primary-color);
+}
+
+.chart {
+	display: inline-block;
+	width: 50%;
+	margin: auto;
+	float: left;
+}
+
+.pie.chart {
+	width: 300px;
+	height: 300px;
+	margin: auto;
+}
+
+svg .infolayer text {
+	fill: var(--primary-color) !important;
+}
+
+.well {
+	text-align: center;
+	margin-bottom: 0;
+}
+
+a {
+	color: var(--primary-color);
+
+	&:hover {
+		color: var(--primary-hover-color);
+	}
+}
+
+.nav-tabs {
+
+	li a {
+		color: grey !important;
+	}
+
+	li.active a {
+		color: var(--primary-color) !important;
+	}
+}
+
+.tab-content {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+
+	.tab-pane {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		display: block;
+		visibility: hidden;
+
+		&.active {
+			visibility: visible;
+		}
+	}
+}
+
+.charts.container {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	margin: auto;
+
+	.chart {
+		height: 100%;
+
+		.plotly {
+			height: 100%;
+
+			.svg-container {
+				height: 100%;
+			}
+		}
+	}
+}

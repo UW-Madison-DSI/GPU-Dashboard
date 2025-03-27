@@ -1,0 +1,14 @@
++---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|  GPU     PID     USER    GPU MEM  %CPU  %MEM      TIME  COMMAND                                                                                               |
+|    0 1139885  yang843    3768MiB   349   1.1  11:28:59  python /data/yang843/TreePoints/TreeCountSegHeight_torch/main1_multitask_counting_segmentation.py     |
+|    0 1172427  yang843    4986MiB   421   1.1  11:00:31  python /data/yang843/TreePoints/TreeCountSegHeight_torch/main1_multitask_counting_segmentation.py     |
+|    1  368360  yingfan   30490MiB   1.3   0.0    1 days  python                                                                                                |
+|    1 2142842  yingfan    7814MiB   166   0.2     10:47  python train_score_direct_mask_new.py --config ./conf/toy_score_general_parity.yaml                   |
+|    3  365663  yingfan   30490MiB   1.2   0.0    1 days  python                                                                                                |
+|    3 2251671  yingfan    7814MiB   187   0.2     07:23  python train_score_direct_mask_new.py --config ./conf/toy_score_general_parity.yaml                   |
+|    5 1048727  yang843    6262MiB   502   1.0  12:31:52  python /data/yang843/TreePoints/TreeCountSegHeight_torch/main1_multitask_counting_segmentation.py     |
+|    6  355039  yingfan   30490MiB   1.4   0.0    1 days  python                                                                                                |
+|    6 2195033  yingfan    7814MiB   198   0.2     08:45  python train_score_direct_mask_new.py --config ./conf/toy_score_general_parity.yaml                   |
+|    7  355578  yingfan   30490MiB   1.4   0.0    1 days  python                                                                                                |
+|    7 2250858  yingfan    7816MiB   197   0.2     07:29  python train_score_direct_mask_new.py --config ./conf/toy_score_general_parity.yaml                   |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------+

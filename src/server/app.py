@@ -18,7 +18,6 @@ from flask import Flask
 from controllers.gpu_controller import GpuController
 from controllers.storage_controller import StorageController
 from flask_cors import CORS
-import time
 
 ################################################################################
 #                                   globals                                    #
@@ -130,8 +129,6 @@ def get_latest_storage():
 
 if __name__ == '__main__':
 	app.debug = True
-
-	time.sleep(5)
 
 	# connect to database
 	#

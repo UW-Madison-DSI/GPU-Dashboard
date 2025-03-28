@@ -118,7 +118,7 @@ def parse_stats(lines):
 #
 
 if __name__ == '__main__':
-	lines = run_command('nvidia-htop.py -l')
+	lines = run_command('/afs/cs.wisc.edu/u/a/m/amegahed/.local/bin/nvidia-htop.py -l')
 	data = parse_stats(lines)
 
 	for item in data:

@@ -62,32 +62,68 @@
 
 		<div class="charts container">
 			<div role="tabpanel" class="gpu-memory tab-pane active">
-				<div id="olvi-1-gpu-memory" class="chart"></div>
-				<div id="olvi-2-gpu-memory" class="chart"></div>
+				<div id="olvi-1-gpu-memory" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>				
+				</div>
+				<div id="olvi-2-gpu-memory" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
 			</div>
 			
 			<div role="tabpanel" class="cpu-load tab-pane">
-				<div id="olvi-1-cpu-load" class="chart"></div>
-				<div id="olvi-2-cpu-load" class="chart"></div>
+				<div id="olvi-1-cpu-load" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>				
+				</div>
+				<div id="olvi-2-cpu-load" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>				
+				</div>
 			</div>
 
 			<div role="tabpanel" class="storage tab-pane">
-				<div id="olvi-1-storage" class="chart"></div>
-				<div id="olvi-2-storage" class="chart"></div>
+				<div id="olvi-1-storage" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+				<div id="olvi-2-storage" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
 			</div>
 		</div>
 
-		<div class="well">Resource utilization of the <a href="https://dsi.wisc.edu/services/gpu/olvi/">Olvi GPU Cluster</a> at the <a href="https://dsi.wisc.edu/">Data Science Institute</a> at the <a href="https://www.wisc.edu/">University of Wisconsin-Madison</a> <span class="date"></span>. </div>
+		<div class="well">Resource utilization of the <a href="https://dsi.wisc.edu/services/gpu/olvi/">Olvi GPU Cluster</a> at the <a href="https://dsi.wisc.edu/">Data Science Institute</a> at the <a href="https://www.wisc.edu/">University of Wisconsin-Madison</a>.</div>
 
 		<script>
-			let server = 'http://localhost:5000';
+			// let server = 'http://localhost:5000';
+			let server = 'https://olvi-dashboard-api.services.dsi.wisc.edu/';
 
 			// allow cross domain requests
 			//
 			$.support.cors = true;
 
-			function showDate(date) {
-				$('.date').text('at ' + date.toLocaleTimeString({timezone: 'America/Chicago'}) + ' on ' + date.toLocaleDateString());
+			function showDate(element, date) {
+				let timeStr = date.toLocaleTimeString({
+					timezone: 'America/Chicago'
+				});
+				let dateStr = date.toLocaleDateString();
+				$(element).find('.date').text(timeStr + ' on ' + dateStr);
+				$(element).show();
 			}
 
 			function getDataByHost(data, host) {
@@ -105,31 +141,58 @@
 				let olvi1Data = getDataByHost(data, 'olvi-1');
 				let olvi2Data = getDataByHost(data, 'olvi-2');
 
-				// gpu charts
+				// show charts
 				//
 				let olvi1GpuChart = new GpuChart({
 					title: 'Olvi-1 GPU Memory',
-					element: $('#olvi-1-gpu-memory')[0],
+					element: $('#olvi-1-gpu-memory .chart')[0],
 					data: olvi1Data
 				});
 				let olvi2GpuChart = new GpuChart({
 					title: 'Olvi-2 GPU Memory',
-					element: $('#olvi-2-gpu-memory')[0],
+					element: $('#olvi-2-gpu-memory .chart')[0],
 					data: olvi2Data
 				});
 
-				// cpu charts
+				// show dates
+				//
+				if (olvi1Data.length > 0) {
+					let date = new Date(olvi1Data[0].created_at + 'Z');
+					this.showDate($('#olvi-1-gpu-memory .updated'), date);
+				}
+				if (olvi2Data.length > 0) {
+					let date = new Date(olvi2Data[0].created_at + 'Z');
+					this.showDate($('#olvi-2-gpu-memory .updated'), date);
+				}
+			}
+
+			function showCpuCharts(data) {
+				let olvi1Data = getDataByHost(data, 'olvi-1');
+				let olvi2Data = getDataByHost(data, 'olvi-2');
+
+				// show charts
 				//
 				let olvi1CpuChart = new CpuChart({
 					title: 'Olvi-1 CPU Load',
-					element: $('#olvi-1-cpu-load')[0],
+					element: $('#olvi-1-cpu-load .chart')[0],
 					data: olvi1Data
 				});
 				let olvi2CpuChart = new CpuChart({
 					title: 'Olvi-2 CPU Load',
-					element: $('#olvi-2-cpu-load')[0],
+					element: $('#olvi-2-cpu-load .chart')[0],
 					data: olvi2Data
 				});
+
+				// show dates
+				//
+				if (olvi1Data.length > 0) {
+					let date = new Date(olvi1Data[0].created_at + 'Z');
+					this.showDate($('#olvi-1-cpu-load .updated'), date);
+				}
+				if (olvi2Data.length > 0) {
+					let date = new Date(olvi2Data[0].created_at + 'Z');
+					this.showDate($('#olvi-2-cpu-load .updated'), date);
+				}
 			}
 
 			function showStorageCharts(data) {
@@ -140,14 +203,25 @@
 				//
 				let olvi1StorageChart = new StorageChart({
 					title: 'Olvi-1 Storage',
-					element: $('#olvi-1-storage')[0],
+					element: $('#olvi-1-storage .chart')[0],
 					data: olvi1Data
 				});
 				let olvi2StorageChart = new StorageChart({
 					title: 'Olvi-2 Storage',
-					element: $('#olvi-2-storage')[0],
+					element: $('#olvi-2-storage .chart')[0],
 					data: olvi2Data
 				});
+
+				// show dates
+				//
+				if (olvi1Data.length > 0) {
+					let date = new Date(olvi1Data[0].created_at + 'Z');
+					this.showDate($('#olvi-1-storage .updated'), date);
+				}
+				if (olvi2Data.length > 0) {
+					let date = new Date(olvi2Data[0].created_at + 'Z');
+					this.showDate($('#olvi-2-storage .updated'), date);
+				}
 			}
 
 			function fetchGpuData(options) {
@@ -198,20 +272,14 @@
 					//
 					success: (data) => {
 						showGpuCharts(data);
-
-						// show date
-						//
-						if (data.length > 0) {
-							let date = new Date(data[0].created_at + ' GMT');
-							this.showDate(date);
-						}
+						showCpuCharts(data);
 
 						this.fetchStorageData({
 
 							// callbacks
 							//
 							success: (data) => {
-								showStorageCharts(data)
+								showStorageCharts(data);
 							}
 						});
 					}

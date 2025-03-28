@@ -68,11 +68,23 @@ body {
 	color: var(--primary-color);
 }
 
-.chart {
-	display: inline-block;
+.tab-panel {
+	display: flex;
+	flex-direction: column;
 	width: 50%;
+	height: 100%;
 	margin: auto;
 	float: left;
+}
+
+.chart {
+	width: 100%;
+	flex-grow: 1;
+}
+
+.updated {
+	text-align: center;
+	margin: 10px;
 }
 
 .pie.chart {

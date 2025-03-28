@@ -103,7 +103,7 @@ class StorageController:
 			# fetch data from database
 			#
 			cursor = db.cursor()
-			query = 'SELECT id, host, amount, directory FROM ' + storage.table + ' WHERE created_at="' + time_str + '" AND host="' + host + '"'
+			query = 'SELECT id, host, amount, directory, created_at FROM ' + storage.table + ' WHERE created_at="' + time_str + '" AND host="' + host + '"'
 			cursor.execute(query)
 			data = cursor.fetchall()
 			cursor.close() 
@@ -119,7 +119,8 @@ class StorageController:
 					'id': item[0],
 					'host': item[1],
 					'amount': item[2],
-					'directory': item[3]
+					'directory': item[3],
+					'created_at': str(item[4])
 				})
 
 		return array

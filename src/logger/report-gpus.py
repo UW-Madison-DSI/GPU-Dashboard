@@ -17,57 +17,111 @@
 
 import requests
 import platform
+import subprocess
 
 #
 # variables
 #
 
-url = 'http://localhost:5000/gpu'
+url = 'https://olvi-dashboard-api.services.dsi.wisc.edu/gpu'
 
 #
 # functions
 #
 
-def parse_stats(filename):
-	data = []
+def run_command(command):
+
+	"""
+	Runs a shell command and returns its output lines as a list.
+
+	Args:
+		command: The shell command to run (string).
+
+	Returns:
+		A list of strings, where each string is a line of the command's output.
+		Returns None if the command fails.
+	"""
+
+	try:
+		process = subprocess.run(command, shell=True, capture_output=True, text=True)
+		output_lines = process.stdout.splitlines()
+		return output_lines
+	except subprocess.CalledProcessError as e:
+		print(f"Command failed with error: {e}")
+		print(f"Stderr: {e.stderr}")
+		return None
+
+def parse_file(filename):
+
+	"""
+	Parse lines of text from file.
+
+	Args:
+		filename: The file to parse.
+
+	Returns:
+		A list of strings.
+	"""
+
+	lines = []
 	with open(filename, "r") as file:
 		count = 0
 		for line in file:
-			count += 1
+			lines.append(line)
+	return lines
 
-			# parse each line
+def parse_stats(lines):
+
+	"""
+	Parse stats from lines of text.
+
+	Args:
+		command: The shell command to run (string).
+
+	Returns:
+		A list of strings, where each string is a line of the command's output.
+		Returns None if the command fails.
+	"""
+
+	data = []
+	count = 0
+	for line in lines:
+		count += 1
+
+		# parse each line
+		#
+		if (count > 43 and not line.startswith('+')):
+			line = line[2:-2]
+
+			# break line by whitespace
 			#
-			if (count > 2 and not line.startswith('+')):
-				line = line[2:-2]
+			items = line.split()
 
-				# break line by whitespace
-				#
-				items = line.split()
+			# parse individual fields
+			#
+			data.append({
+				'host': platform.node(),
+				'gpu': int(items[0]),
+				'pid': int(items[1]),
+				'user': items[2],
+				'gpu_memory': int(items[3].replace('MiB', '')),
+				'percent_cpu': items[4],
+				'percent_memory': items[5],
+				'time': items[6],
+				'command': ' '.join(items[7:])
+			})
 
-				# parse individual fields
-				#
-				data.append({
-					'host': platform.node(),
-					'host': 'olvi-2',
-					'gpu': int(items[0]),
-					'pid': int(items[1]),
-					'user': items[2],
-					'gpu_memory': int(items[3].replace('MiB', '')),
-					'percent_cpu': items[4],
-					'percent_memory': items[5],
-					'time': items[6],
-					'command': ' '.join(items[7:])
-				})
-
-		return data
+	return data
 
 #
 # main
 #
 
 if __name__ == '__main__':
-	data = parse_stats('olvi2-gpu-usage.txt')
+	lines = run_command('nvidia-htop.py -l')
+	data = parse_stats(lines)
 
 	for item in data:
-		print(item)
+		# print(item)
 		response = requests.post(url, data=item)
+		print(response)

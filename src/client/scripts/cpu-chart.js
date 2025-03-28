@@ -138,7 +138,7 @@ class CpuChart {
 				title: {
 					text: 'CPU Load (%)'
 				},
-				range: [0, 100]
+				// range: [0, 100]
 			}
 		};
 

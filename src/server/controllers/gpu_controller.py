@@ -15,9 +15,10 @@
 import datetime
 import flask
 from flask import request
+from controllers.controller import Controller
 from models.gpu import Gpu
 
-class GpuController:
+class GpuController(Controller):
 
 	#
 	# posting methods
@@ -55,7 +56,9 @@ class GpuController:
 
 		# store data
 		#
-		gpu.save(db)
+		connection = Controller.connect(db)
+		gpu.save(connection)
+		connection.close()
 
 		# return response
 		#
@@ -70,11 +73,13 @@ class GpuController:
 
 		# fetch data from database
 		#
-		cursor = db.cursor()
+		connection = GpuController.connect(db)
+		cursor = connection.cursor()
 		query = 'SELECT DISTINCT host FROM gpus';
 		cursor.execute(query)
 		data = cursor.fetchall()
 		cursor.close()
+		connection.close()
 
 		# format data
 		#
@@ -89,15 +94,17 @@ class GpuController:
 
 		# fetch time from database
 		#
-		cursor = db.cursor()
+		connection = Controller.connect(db)
+		cursor = connection.cursor()
 		query = 'SELECT MAX(created_at) FROM ' + gpu.table + ' WHERE host="' + host + '" LIMIT 1'
 		cursor.execute(query)
 		latest_time = cursor.fetchone()
 		cursor.close() 
+		connection.close()
 
 		# format time
 		#
-		time_str = latest_time[0].strftime('%Y-%m-%d %H:%M:%S') if (latest_time[0]) else None
+		time_str = latest_time[0].strftime('%Y-%m-%d %H:%M') if (latest_time[0]) else None
 		return time_str
 
 	@staticmethod
@@ -114,11 +121,13 @@ class GpuController:
 
 			# fetch data from database
 			#
-			cursor = db.cursor()
-			query = 'SELECT id, host, gpu, pid, user, gpu_memory, percent_cpu, percent_memory, time, command, created_at FROM ' + gpu.table + ' WHERE created_at="' + time_str + '" AND host="' + host + '"'
+			connection = Controller.connect(db)
+			cursor = connection.cursor()
+			query = 'SELECT id, host, gpu, pid, user, gpu_memory, percent_cpu, percent_memory, time, command, created_at FROM ' + gpu.table + ' WHERE created_at >="' + time_str + '" AND host="' + host + '"'
 			cursor.execute(query)
 			data = cursor.fetchall()
-			cursor.close() 
+			cursor.close()
+			connection.close()
 		else:
 			data = None
 

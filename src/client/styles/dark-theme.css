@@ -1,0 +1,144 @@
+/******************************************************************************\
+|                                                                              |
+|                                dark-theme.css                                |
+|                                                                              |
+|******************************************************************************|
+|                                                                              |
+|        This defines the visual styles used in this application.              |
+|                                                                              |
+|        Author(s): Abe Megahed                                                |
+|                                                                              |
+|        This file is subject to the terms and conditions defined in           |
+|        'LICENSE.md', which is part of this source code distribution.         |
+|                                                                              |
+|******************************************************************************|
+|     Copyright (C) 2025, Data Science Institute, University of Wisconsin      |
+\******************************************************************************/
+
+@media (prefers-color-scheme: dark) {
+	body:not(.light) {
+		background: #303030;
+		color: lightgrey;
+
+		.title {
+			color: lightgrey;
+		}
+
+		svg .infolayer text {
+			fill: var(--primary-color) !important;
+		}
+
+		a {
+			color: lightgrey;
+
+			&:hover {
+				color: white;
+			}
+		}
+
+		.nav-tabs {
+			li:not(.active) {
+				a {
+					color: lightgrey !important;
+
+					&:hover {
+						color: white !important;
+						background: #606060;
+						border-color: #606060;	
+						border-bottom-color: white;		
+					}
+				}
+			}
+		}
+
+		.plotly {
+			svg {
+				background: transparent !important;
+
+				.infolayer text {
+					fill: lightgrey !important;
+				}
+
+				.gridlayer path {
+					stroke: white !important;
+				}
+
+				.xtick text,
+				.ytick text {
+					fill: white !important;
+				}
+			}
+
+			.legend rect {
+				fill: transparent !important;
+			}
+		}
+
+		.footer {
+			background: #404040;
+		}
+	}
+}
+
+body.dark {
+	background: #303030;
+	color: lightgrey;
+
+	.title {
+		color: lightgrey;
+	}
+
+	svg .infolayer text {
+		fill: var(--primary-color) !important;
+	}
+
+	a {
+		color: lightgrey;
+
+		&:hover {
+			color: white;
+		}
+	}
+
+	.nav-tabs {
+		li:not(.active) {
+			a {
+				color: lightgrey !important;
+
+				&:hover {
+					color: white !important;
+					background: #606060;
+					border-color: #606060;	
+					border-bottom-color: white;		
+				}
+			}
+		}
+	}
+
+	.plotly {
+		svg {
+			background: transparent !important;
+
+			.infolayer text {
+				fill: lightgrey !important;
+			}
+
+			.gridlayer path {
+				stroke: white !important;
+			}
+
+			.xtick text,
+			.ytick text {
+				fill: white !important;
+			}
+		}
+
+		.legend rect {
+			fill: transparent !important;
+		}
+	}
+
+	.footer {
+		background: #404040;
+	}
+}

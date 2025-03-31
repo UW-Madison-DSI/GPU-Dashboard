@@ -15,9 +15,10 @@
 import datetime
 import flask
 from flask import request
+from controllers.controller import Controller
 from models.storage import Storage
 
-class StorageController:
+class StorageController(Controller):
 
 	#
 	# posting methods
@@ -43,7 +44,9 @@ class StorageController:
 
 		# store data
 		#
-		storage.save(db)
+		connection = Controller.connect(db)
+		storage.save(connection)
+		connection.close()
 
 		# return response
 		#
@@ -58,11 +61,13 @@ class StorageController:
 
 		# fetch data from database
 		#
-		cursor = db.cursor()
+		connection = Controller.connect(db)
+		cursor = connection.cursor()
 		query = 'SELECT DISTINCT host FROM gpus';
 		cursor.execute(query)
 		data = cursor.fetchall()
 		cursor.close() 
+		connection.close()
 
 		# format data
 		#
@@ -77,15 +82,17 @@ class StorageController:
 
 		# fetch time from database
 		#
-		cursor = db.cursor()
+		connection = Controller.connect(db)
+		cursor = connection.cursor()
 		query = 'SELECT MAX(created_at) FROM ' + storage.table + ' WHERE host="' + host + '" LIMIT 1'
 		cursor.execute(query)
 		latest_time = cursor.fetchone()
 		cursor.close() 
+		connection.close()
 
 		# format time
 		#
-		time_str = latest_time[0].strftime('%Y-%m-%d %H:%M:%S') if (latest_time[0]) else None
+		time_str = latest_time[0].strftime('%Y-%m-%d %H:%M') if (latest_time[0]) else None
 		return time_str
 
 	@staticmethod
@@ -102,11 +109,13 @@ class StorageController:
 
 			# fetch data from database
 			#
-			cursor = db.cursor()
-			query = 'SELECT id, host, amount, directory, created_at FROM ' + storage.table + ' WHERE created_at="' + time_str + '" AND host="' + host + '"'
+			connection = Controller.connect(db)
+			cursor = connection.cursor()
+			query = 'SELECT id, host, amount, directory, created_at FROM ' + storage.table + ' WHERE created_at >="' + time_str + '" AND host="' + host + '"'
 			cursor.execute(query)
 			data = cursor.fetchall()
-			cursor.close() 
+			cursor.close()
+			connection.close()
 		else:
 			data = None
 
@@ -141,4 +150,3 @@ class StorageController:
 				storage = StorageController.get_latest_storage_by_host(db, host)
 				array += storage
 			return array
-

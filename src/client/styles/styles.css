@@ -19,8 +19,6 @@ body {
 	display: flex;
 	flex-direction: column;
 	font-family: 'Red Hat Text', sans-serif;
-	--primary-color: #c5050c;
-	--primary-hover-color: #900000;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -31,8 +29,6 @@ body {
 
 .header {
 	display: flex;
-	background-color: var(--primary-color);
-	color: white;
 	height: 35px;
 
 	.brand {
@@ -52,6 +48,26 @@ body {
 	}
 }
 
+.btn {
+	i {
+		color: black;
+		margin: 0;
+		font-size: 1.25em;
+		line-height: 1.25em;
+	}
+
+	&:focus {
+		outline: none !important;
+	}
+}
+
+.btn-sm {
+	width: 30px;
+	height: 30px;
+	padding: 0;
+	margin: auto 10px
+}
+
 .logo {
 	height: 40px;
 	float: left;
@@ -65,7 +81,6 @@ body {
 	float: left;
 	margin: 0 20px;
 	margin-right: 40px;
-	color: var(--primary-color);
 }
 
 .tab-panel {
@@ -93,32 +108,12 @@ body {
 	margin: auto;
 }
 
-svg .infolayer text {
-	fill: var(--primary-color) !important;
-}
-
-.well {
+.footer {
 	text-align: center;
-	margin-bottom: 0;
-}
-
-a {
-	color: var(--primary-color);
-
-	&:hover {
-		color: var(--primary-hover-color);
-	}
-}
-
-.nav-tabs {
-
-	li a {
-		color: grey !important;
-	}
-
-	li.active a {
-		color: var(--primary-color) !important;
-	}
+	padding: 10px;
+	margin: 0;
+	border: none;
+	border-radius: 0;
 }
 
 .tab-content {
@@ -159,5 +154,15 @@ a {
 				height: 100%;
 			}
 		}
+	}
+}
+
+a {
+	text-decoration: underline;
+}
+
+.nav-tabs {
+	li.active a:focus {
+		outline: none;
 	}
 }

@@ -23,7 +23,7 @@ import subprocess
 # variables
 #
 
-url = 'https://olvi-dashboard-api.services.dsi.wisc.edu/gpu'
+url = 'https://olvi-dashboard-api.services.dsi.wisc.edu/storage'
 
 def run_command(command):
 
@@ -83,15 +83,40 @@ def parse_stats(lines):
 
 	return data
 
+def parse_avail(line):
+
+	"""
+	Parse stats from lines of text.
+
+	Args:
+		command: The shell command to run (string).
+
+	Returns:
+		A list of strings, where each string is a line of the command's output.
+		Returns None if the command fails.
+	"""
+
+	items = line.split()
+
+	# parse individual fields
+	#
+	return {
+		'host': platform.node(),
+		'amount': items[3],
+		'directory': 'free'
+	}
+
 #
 # main
 #
 
 if __name__ == '__main__':
-	lines = run_command('sudo du -hs /data/* | sort -rh | head -10')
+	lines = run_command('du -hs /data/* | sort -rh | head -10')
 	data = parse_stats(lines)
+	lines = run_command('df -h /data')
+	data.append(parse_avail(lines[1]))
 
 	for item in data:
-		# print(item)
-		response = requests.post(url, data=item)
-		print(response)
+		print(item)
+		# response = requests.post(url, data=item)
+		# print(response)

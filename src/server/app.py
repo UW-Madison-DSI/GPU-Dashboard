@@ -23,11 +23,22 @@ from flask_cors import CORS
 #                                   globals                                    #
 ################################################################################
 
-host = 'db'
-port = 3306
-username = 'webuser'
-password = 'password'
-database = 'dashboard'
+'''
+db = {
+	'host': 'db',
+	'port': 3306,
+	'username': 'webuser',
+	'password': 'password',
+	'database': 'dashboard'	
+}
+'''
+db = {
+	'host': 'localhost',
+	'port': 3306,
+	'username': 'root',
+	'password': 'root',
+	'database': 'dashboard'
+}
 
 ################################################################################
 #                                initialization                                #
@@ -129,22 +140,6 @@ def get_latest_storage():
 
 if __name__ == '__main__':
 	app.debug = True
-
-	# connect to database
-	#
-	try:
-		db = mysql.connector.connect(
-			host = host,
-			port = port,
-			user = username,
-			password = password,
-			database = database
-		)
-		print("Connected to database " + database)
-	except Exception as e:
-		print("Could not connect to database " + database + " at " + host)
-		print(str(e))
-		exit()
 
 	if (app.config['PORT'] == 443):
 		app.run(host=app.config['HOST'], port=443, ssl_context=(app.config['SSL_CERT'], app.config['SSL_KEY']))

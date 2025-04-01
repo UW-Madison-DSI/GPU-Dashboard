@@ -201,6 +201,35 @@ function showCpuCharts(data) {
 	}
 }
 
+function showMemoryCharts(data) {
+	let olvi1Data = getDataByHost(data, 'olvi-1');
+	let olvi2Data = getDataByHost(data, 'olvi-2');
+
+	// show charts
+	//
+	let olvi1MemoryChart = new MemoryChart({
+		title: 'Olvi-1 Memory',
+		element: $('#olvi-1-memory .chart')[0],
+		data: olvi1Data
+	});
+	let olvi2MemoryChart = new MemoryChart({
+		title: 'Olvi-2 Memory',
+		element: $('#olvi-2-memory .chart')[0],
+		data: olvi2Data
+	});
+
+	// show dates
+	//
+	if (olvi1Data.length > 0) {
+		let date = new Date(olvi1Data[0].created_at + 'Z');
+		this.showDate($('#olvi-1-memory .updated'), date);
+	}
+	if (olvi2Data.length > 0) {
+		let date = new Date(olvi2Data[0].created_at + 'Z');
+		this.showDate($('#olvi-2-memory .updated'), date);
+	}
+}
+
 function showStorageCharts(data) {
 	let olvi1Data = getDataByHost(data, 'olvi-1');
 	let olvi2Data = getDataByHost(data, 'olvi-2');
@@ -252,6 +281,7 @@ window.onload = function() {
 		success: (data) => {
 			showGpuCharts(data);
 			showCpuCharts(data);
+			showMemoryCharts(data);
 
 			this.fetchStorageData({
 
@@ -273,6 +303,9 @@ window.onload = function() {
 	});
 	$('a#cpu').click(() => {
 		window.location.hash = 'cpu';
+	});
+	$('a#memory').click(() => {
+		window.location.hash = 'memory';
 	});
 	$('a#storage').click(() => {
 		window.location.hash = 'storage';

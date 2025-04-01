@@ -29,6 +29,7 @@
 		<!-- custom scripts -->
 		<script type="text/javascript" src="scripts/gpu-chart.js"></script>
 		<script type="text/javascript" src="scripts/cpu-chart.js"></script>
+		<script type="text/javascript" src="scripts/memory-chart.js"></script>
 		<script type="text/javascript" src="scripts/storage-chart.js"></script>
 		<script type="text/javascript" src="scripts/main.js"></script>
 	</head>
@@ -56,6 +57,11 @@
 				<li role="presentation" class="cpu-load-tab">
 					<a id="cpu" role="tab" data-toggle="tab" href=".cpu-load.tab-pane">
 						<label>CPU Load</label>
+					</a>
+				</li>
+				<li role="presentation" class="storage-tab">
+					<a id="memory" role="tab" data-toggle="tab" href=".memory.tab-pane">
+						<label>Memory</label>
 					</a>
 				</li>
 				<li role="presentation" class="storage-tab">
@@ -96,6 +102,21 @@
 					<div class="updated">
 						Updated <span class="date"></span>
 					</div>				
+				</div>
+			</div>
+
+			<div role="tabpanel" class="memory tab-pane">
+				<div id="olvi-1-memory" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+				<div id="olvi-2-memory" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
 				</div>
 			</div>
 

@@ -162,6 +162,10 @@ a {
 }
 
 .nav-tabs {
+	li a {
+		padding: 10px;
+	}
+
 	li.active a:focus {
 		outline: none;
 	}

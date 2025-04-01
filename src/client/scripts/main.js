@@ -152,7 +152,7 @@ function fetchStorageData(options) {
 // rendering methods
 //
 
-function showGpuCharts(data) {
+function showGpuMemoryCharts(data) {
 	let olvi1Data = getDataByHost(data, 'olvi-1');
 	let olvi2Data = getDataByHost(data, 'olvi-2');
 
@@ -181,7 +181,94 @@ function showGpuCharts(data) {
 	}
 }
 
-function showCpuCharts(data) {
+function showGpuLoadCharts(data) {
+	let olvi1Data = getDataByHost(data, 'olvi-1');
+	let olvi2Data = getDataByHost(data, 'olvi-2');
+
+	// show charts
+	//
+	let olvi1Chart = new GpuLoadChart({
+		title: 'Olvi-1 GPU Load',
+		element: $('#olvi-1-gpu-load .chart')[0],
+		data: olvi1Data
+	});
+	let olvi2Chart = new GpuLoadChart({
+		title: 'Olvi-2 GPU Load',
+		element: $('#olvi-2-gpu-load .chart')[0],
+		data: olvi2Data
+	});
+
+	// show dates
+	//
+	if (olvi1Data.length > 0) {
+		let date = new Date(olvi1Data[0].created_at + 'Z');
+		this.showDate($('#olvi-1-gpu-load .updated'), date);
+	}
+	if (olvi2Data.length > 0) {
+		let date = new Date(olvi2Data[0].created_at + 'Z');
+		this.showDate($('#olvi-2-gpu-load .updated'), date);
+	}
+}
+
+function showGpuTempCharts(data) {
+	let olvi1Data = getDataByHost(data, 'olvi-1');
+	let olvi2Data = getDataByHost(data, 'olvi-2');
+
+	// show charts
+	//
+	let olvi1Chart = new GpuTempChart({
+		title: 'Olvi-1 GPU Temp',
+		element: $('#olvi-1-gpu-temp .chart')[0],
+		data: olvi1Data
+	});
+	let olvi2Chart = new GpuTempChart({
+		title: 'Olvi-2 GPU Temp',
+		element: $('#olvi-2-gpu-temp .chart')[0],
+		data: olvi2Data
+	});
+
+	// show dates
+	//
+	if (olvi1Data.length > 0) {
+		let date = new Date(olvi1Data[0].created_at + 'Z');
+		this.showDate($('#olvi-1-gpu-temp .updated'), date);
+	}
+	if (olvi2Data.length > 0) {
+		let date = new Date(olvi2Data[0].created_at + 'Z');
+		this.showDate($('#olvi-2-gpu-temp .updated'), date);
+	}
+}
+
+function showGpuPowerCharts(data) {
+	let olvi1Data = getDataByHost(data, 'olvi-1');
+	let olvi2Data = getDataByHost(data, 'olvi-2');
+
+	// show charts
+	//
+	let olvi1Chart = new GpuPowerChart({
+		title: 'Olvi-1 GPU Power Consumption',
+		element: $('#olvi-1-gpu-power .chart')[0],
+		data: olvi1Data
+	});
+	let olvi2Chart = new GpuPowerChart({
+		title: 'Olvi-2 GPU Power Consumption',
+		element: $('#olvi-2-gpu-power .chart')[0],
+		data: olvi2Data
+	});
+
+	// show dates
+	//
+	if (olvi1Data.length > 0) {
+		let date = new Date(olvi1Data[0].created_at + 'Z');
+		this.showDate($('#olvi-1-gpu-power .updated'), date);
+	}
+	if (olvi2Data.length > 0) {
+		let date = new Date(olvi2Data[0].created_at + 'Z');
+		this.showDate($('#olvi-2-gpu-power .updated'), date);
+	}
+}
+
+function showCpuLoadCharts(data) {
 	let olvi1Data = getDataByHost(data, 'olvi-1');
 	let olvi2Data = getDataByHost(data, 'olvi-2');
 
@@ -243,7 +330,7 @@ function showStorageCharts(data) {
 	let olvi1Data = getDataByHost(data, 'olvi-1');
 	let olvi2Data = getDataByHost(data, 'olvi-2');
 
-	// storage charts
+	// show charts
 	//
 	let olvi1Chart = new StorageChart({
 		title: 'Olvi-1 Storage',
@@ -268,35 +355,6 @@ function showStorageCharts(data) {
 	}
 }
 
-function showTempCharts(data) {
-	let olvi1Data = getDataByHost(data, 'olvi-1');
-	let olvi2Data = getDataByHost(data, 'olvi-2');
-
-	// temp charts
-	//
-	let olvi1Chart = new GpuTempChart({
-		title: 'Olvi-1 GPU Temp',
-		element: $('#olvi-1-gpu-temp .chart')[0],
-		data: olvi1Data
-	});
-	let olvi2Chart = new GpuTempChart({
-		title: 'Olvi-2 GPU Temp',
-		element: $('#olvi-2-gpu-temp .chart')[0],
-		data: olvi2Data
-	});
-
-	// show dates
-	//
-	if (olvi1Data.length > 0) {
-		let date = new Date(olvi1Data[0].created_at + 'Z');
-		this.showDate($('#olvi-1-gpu-temp .updated'), date);
-	}
-	if (olvi2Data.length > 0) {
-		let date = new Date(olvi2Data[0].created_at + 'Z');
-		this.showDate($('#olvi-2-gpu-temp .updated'), date);
-	}
-}
-
 //
 // main
 //
@@ -317,8 +375,8 @@ window.onload = function() {
 		// callbacks
 		//
 		success: (data) => {
-			showGpuCharts(data);
-			showCpuCharts(data);
+			showGpuMemoryCharts(data);
+			showCpuLoadCharts(data);
 			showMemoryCharts(data);
 
 			this.fetchGpuData({
@@ -326,7 +384,9 @@ window.onload = function() {
 				// callbacks
 				//
 				success: (data) => {
-					showTempCharts(data);
+					showGpuLoadCharts(data);
+					showGpuTempCharts(data);
+					showGpuPowerCharts(data);
 
 					this.fetchStorageData({
 
@@ -343,13 +403,22 @@ window.onload = function() {
 
 	// set tab callbacks
 	//
-	$('a#gpu').click(() => {
+	$('a#gpu-memory').click(() => {
 		let url = window.location.href;
 		let baseUrl = url.substr(0, url.indexOf('#'));
 		history.replaceState(null, null, baseUrl);
 	});
-	$('a#cpu').click(() => {
-		window.location.hash = 'cpu';
+	$('a#gpu-load').click(() => {
+		window.location.hash = 'gpu-load';
+	});
+	$('a#gpu-temp').click(() => {
+		window.location.hash = 'gpu-temp';
+	});
+	$('a#gpu-power').click(() => {
+		window.location.hash = 'gpu-power';
+	});
+	$('a#cpu-load').click(() => {
+		window.location.hash = 'cpu-load';
 	});
 	$('a#memory').click(() => {
 		window.location.hash = 'memory';
@@ -357,9 +426,7 @@ window.onload = function() {
 	$('a#storage').click(() => {
 		window.location.hash = 'storage';
 	});
-	$('a#temp').click(() => {
-		window.location.hash = 'temp';
-	});
+
 
 	// set initial tab
 	//

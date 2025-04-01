@@ -1,10 +1,10 @@
 /******************************************************************************\
 |                                                                              |
-|                              gpu-temp-chart.js                               |
+|                             gpu-power-chart.js                               |
 |                                                                              |
 |******************************************************************************|
 |                                                                              |
-|        This is a bar chart for displaying gpu temp statistics.               |
+|        This is a bar chart for displaying gpu power statistics.               |
 |                                                                              |
 |        Author(s): Abe Megahed                                                |
 |                                                                              |
@@ -15,7 +15,7 @@
 |     Copyright (C) 2025, Data Science Institute, University of Wisconsin      |
 \******************************************************************************/
 
-class GpuTempChart {
+class GpuPowerChart {
 
 	//
 	// methods
@@ -29,7 +29,7 @@ class GpuTempChart {
 		this.element = attributes.element;
 		this.data = attributes.data;
 		this.num_gpus = 8;
-		this.temps = this.getTemps(this.data);
+		this.powers = this.getPowers(this.data);
 
 		// show chart
 		//
@@ -43,14 +43,14 @@ class GpuTempChart {
 	// getting methods
 	//
 
-	getTemps() {
+	getPowers() {
 		let names = this.getGpuNames();
-		let temps = this.getGpuTemps();
-		let colors = this.getGpuColors(temps);
+		let powers = this.getGpuPowers();
+		let colors = this.getGpuColors(powers);
 
 		return [{
 			x: names,
-			y: temps,
+			y: powers,
 			marker: {
 				color: colors
 			},
@@ -66,29 +66,29 @@ class GpuTempChart {
 		return names;
 	}
 
-	getGpuTemps() {
-		let temps = []
+	getGpuPowers() {
+		let powers = []
 		for (let i = 0; i < this.num_gpus; i++) {
-			temps.push(this.getTempByGpu(i));
+			powers.push(this.getPowerByGpu(i));
 		}
-		return temps;
+		return powers;
 	}
 
-	getGpuColors(temps) {
+	getGpuColors(powers) {
 		let colors = []
-		for (let i = 0; i < temps.length; i++) {
-			colors.push(this.getGpuColor(temps[i]));
+		for (let i = 0; i < powers.length; i++) {
+			colors.push(this.getGpuColor(powers[i]));
 		}
 		return colors;
 	}
 
-	getGpuColor(temp) {
-		let high = 50;
+	getGpuColor(power) {
+		let high = 250;
 		let low = 0;
-		let t = (temp - low) / (high - low);
-		let highColor = [255, 63, 63];
-		let midColor = [127, 127, 127];
-		let lowColor = [63, 63, 255];
+		let t = (power - low) / (high - low);
+		let highColor = [127, 127, 255];
+		let midColor = [127, 127, 192];
+		let lowColor = [127, 127, 127];
 		let r, g, b;
 
 		if (t > 0.5) {
@@ -106,11 +106,11 @@ class GpuTempChart {
 		return 'rgb(' + r + ',' + g + ',' + b + ')';
 	}
 
-	getTempByGpu(index) {
+	getPowerByGpu(index) {
 		for (let i = 0; i < this.data.length; i++) {
 			let gpu = this.data[i];
 			if (gpu.gpu == index) {
-				return gpu.temp
+				return gpu.power
 			}
 		}
 	}
@@ -131,9 +131,9 @@ class GpuTempChart {
 			},
 			yaxis: {
 				title: {
-					text: 'Temp (C)'
+					text: 'Power (W)'
 				},
-				range: [0, 50]
+				range: [0, 250]
 			}
 		};
 
@@ -141,6 +141,6 @@ class GpuTempChart {
 			displayModeBar: false
 		}
 
-		Plotly.newPlot(this.element, this.temps, layout, config);
+		Plotly.newPlot(this.element, this.powers, layout, config);
 	}
 }

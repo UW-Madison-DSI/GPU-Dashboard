@@ -1,10 +1,10 @@
 /******************************************************************************\
 |                                                                              |
-|                              gpu-temp-chart.js                               |
+|                              gpu-load-chart.js                               |
 |                                                                              |
 |******************************************************************************|
 |                                                                              |
-|        This is a bar chart for displaying gpu temp statistics.               |
+|        This is a bar chart for displaying gpu load statistics.               |
 |                                                                              |
 |        Author(s): Abe Megahed                                                |
 |                                                                              |
@@ -15,7 +15,7 @@
 |     Copyright (C) 2025, Data Science Institute, University of Wisconsin      |
 \******************************************************************************/
 
-class GpuTempChart {
+class GpuLoadChart {
 
 	//
 	// methods
@@ -29,7 +29,7 @@ class GpuTempChart {
 		this.element = attributes.element;
 		this.data = attributes.data;
 		this.num_gpus = 8;
-		this.temps = this.getTemps(this.data);
+		this.loads = this.getLoads(this.data);
 
 		// show chart
 		//
@@ -43,14 +43,14 @@ class GpuTempChart {
 	// getting methods
 	//
 
-	getTemps() {
+	getLoads() {
 		let names = this.getGpuNames();
-		let temps = this.getGpuTemps();
-		let colors = this.getGpuColors(temps);
+		let loads = this.getGpuLoads();
+		let colors = this.getGpuColors(loads);
 
 		return [{
 			x: names,
-			y: temps,
+			y: loads,
 			marker: {
 				color: colors
 			},
@@ -66,29 +66,29 @@ class GpuTempChart {
 		return names;
 	}
 
-	getGpuTemps() {
-		let temps = []
+	getGpuLoads() {
+		let loads = []
 		for (let i = 0; i < this.num_gpus; i++) {
-			temps.push(this.getTempByGpu(i));
+			loads.push(this.getLoadByGpu(i));
 		}
-		return temps;
+		return loads;
 	}
 
-	getGpuColors(temps) {
+	getGpuColors(loads) {
 		let colors = []
-		for (let i = 0; i < temps.length; i++) {
-			colors.push(this.getGpuColor(temps[i]));
+		for (let i = 0; i < loads.length; i++) {
+			colors.push(this.getGpuColor(loads[i]));
 		}
 		return colors;
 	}
 
-	getGpuColor(temp) {
-		let high = 50;
+	getGpuColor(load) {
+		let high = 100;
 		let low = 0;
-		let t = (temp - low) / (high - low);
+		let t = (load - low) / (high - low);
 		let highColor = [255, 63, 63];
-		let midColor = [127, 127, 127];
-		let lowColor = [63, 63, 255];
+		let midColor = [63, 192, 63];
+		let lowColor = [63, 127, 192];
 		let r, g, b;
 
 		if (t > 0.5) {
@@ -106,11 +106,11 @@ class GpuTempChart {
 		return 'rgb(' + r + ',' + g + ',' + b + ')';
 	}
 
-	getTempByGpu(index) {
+	getLoadByGpu(index) {
 		for (let i = 0; i < this.data.length; i++) {
 			let gpu = this.data[i];
 			if (gpu.gpu == index) {
-				return gpu.temp
+				return gpu.gpu_util
 			}
 		}
 	}
@@ -131,9 +131,9 @@ class GpuTempChart {
 			},
 			yaxis: {
 				title: {
-					text: 'Temp (C)'
+					text: 'Load (%)'
 				},
-				range: [0, 50]
+				range: [0, 100]
 			}
 		};
 
@@ -141,6 +141,6 @@ class GpuTempChart {
 			displayModeBar: false
 		}
 
-		Plotly.newPlot(this.element, this.temps, layout, config);
+		Plotly.newPlot(this.element, this.loads, layout, config);
 	}
 }

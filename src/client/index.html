@@ -28,10 +28,12 @@
 
 		<!-- custom scripts -->
 		<script type="text/javascript" src="scripts/gpu-memory-chart.js"></script>
+		<script type="text/javascript" src="scripts/gpu-load-chart.js"></script>
+		<script type="text/javascript" src="scripts/gpu-temp-chart.js"></script>
+		<script type="text/javascript" src="scripts/gpu-power-chart.js"></script>
 		<script type="text/javascript" src="scripts/cpu-load-chart.js"></script>
 		<script type="text/javascript" src="scripts/memory-chart.js"></script>
 		<script type="text/javascript" src="scripts/storage-chart.js"></script>
-		<script type="text/javascript" src="scripts/gpu-temp-chart.js"></script>
 		<script type="text/javascript" src="scripts/main.js"></script>
 	</head>
 
@@ -46,22 +48,32 @@
 		</div>
 		<div class="header-bar">
 			<img class="logo" src="images/olvi-logo.png">
-			<h1 class="title">Olvi Resources Dashboard</h1>
+			<h1 class="title">Olvi Dashboard</h1>
 
 			<ul class="nav nav-tabs" role="tablist">
 				
 				<li role="presentation" class="gpu-memory-tab active">
-					<a id="gpu" role="tab" data-toggle="tab" href=".gpu-memory.tab-pane">
+					<a id="gpu-memory" role="tab" data-toggle="tab" href=".gpu-memory.tab-pane">
 						<label>GPU Memory</label>
 					</a>
 				</li>
-				<li role="presentation" class="temp-tab">
-					<a id="temp" role="tab" data-toggle="tab" href=".temp.tab-pane">
+				<li role="presentation" class="gpu-load-tab">
+					<a id="gpu-load" role="tab" data-toggle="tab" href=".gpu-load.tab-pane">
+						<label>GPU Load</label>
+					</a>
+				</li>
+				<li role="presentation" class="gpu-temp-tab">
+					<a id="gpu-temp" role="tab" data-toggle="tab" href=".gpu-temp.tab-pane">
 						<label>GPU Temp</label>
 					</a>
 				</li>
+				<li role="presentation" class="gpu-power-tab">
+					<a id="gpu-power" role="tab" data-toggle="tab" href=".gpu-power.tab-pane">
+						<label>GPU Power</label>
+					</a>
+				</li>
 				<li role="presentation" class="cpu-load-tab">
-					<a id="cpu" role="tab" data-toggle="tab" href=".cpu-load.tab-pane">
+					<a id="cpu-load" role="tab" data-toggle="tab" href=".cpu-load.tab-pane">
 						<label>CPU Load</label>
 					</a>
 				</li>
@@ -96,7 +108,22 @@
 				</div>
 			</div>
 
-			<div role="tabpanel" class="temp tab-pane">
+			<div role="tabpanel" class="gpu-load tab-pane">
+				<div id="olvi-1-gpu-load" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+				<div id="olvi-2-gpu-load" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+			</div>
+
+			<div role="tabpanel" class="gpu-temp tab-pane">
 				<div id="olvi-1-gpu-temp" class="tab-panel">
 					<div class="chart"></div>
 					<div class="updated">
@@ -104,6 +131,21 @@
 					</div>
 				</div>
 				<div id="olvi-2-gpu-temp" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+			</div>
+
+			<div role="tabpanel" class="gpu-power tab-pane">
+				<div id="olvi-1-gpu-power" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+				<div id="olvi-2-gpu-power" class="tab-panel">
 					<div class="chart"></div>
 					<div class="updated">
 						Updated <span class="date"></span>

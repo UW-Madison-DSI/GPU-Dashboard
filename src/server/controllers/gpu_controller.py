@@ -4,7 +4,7 @@
 #                                                                              #
 ################################################################################
 #                                                                              #
-#        This controller is used to handle requests for gpu use info.          #
+#        This controller is used to handle requests for gpu info.              #
 #                                                                              #
 #        Author(s): Abe Megahed                                                #
 #                                                                              #
@@ -31,26 +31,20 @@ class GpuController(Controller):
 		#
 		host = request.form.get('host')
 		gpu = request.form.get('gpu')
-		pid = request.form.get('pid')
-		user = request.form.get('user')
-		gpu_memory = request.form.get('gpu_memory')
-		percent_cpu = request.form.get('percent_cpu')
-		percent_memory = request.form.get('percent_memory')
-		time = request.form.get('time')
-		command = request.form.get('command')
+		temp = request.form.get('temp')
+		power = request.form.get('power')
+		memory = request.form.get('memory')
+		gpu_util = request.form.get('gpu_util')
 
-		# create gpu log object
+		# create process object
 		#
 		gpu = Gpu({
 			'host': host,
 			'gpu': gpu,
-			'pid': pid,
-			'user': user,
-			'gpu_memory': gpu_memory,
-			'percent_cpu': percent_cpu,
-			'percent_memory': percent_memory,
-			'time': time,
-			'command': command,
+			'temp': temp,
+			'power': power,
+			'memory': memory,
+			'gpu_util': gpu_util,
 			'created_at': datetime.datetime.now()
 		})
 
@@ -70,12 +64,13 @@ class GpuController(Controller):
 
 	@staticmethod
 	def get_hosts(db):
+		gpu = Gpu()
 
 		# fetch data from database
 		#
-		connection = GpuController.connect(db)
+		connection = Controller.connect(db)
 		cursor = connection.cursor()
-		query = 'SELECT DISTINCT host FROM gpus';
+		query = 'SELECT DISTINCT host FROM ' + gpu.table;
 		cursor.execute(query)
 		data = cursor.fetchall()
 		cursor.close()
@@ -108,7 +103,7 @@ class GpuController(Controller):
 		return time_str
 
 	@staticmethod
-	def get_latest_gpus_by_host(db, host):
+	def get_latest_by_host(db, host):
 		gpu = Gpu()
 
 		# get most recent time logged for this host
@@ -123,7 +118,7 @@ class GpuController(Controller):
 			#
 			connection = Controller.connect(db)
 			cursor = connection.cursor()
-			query = 'SELECT id, host, gpu, pid, user, gpu_memory, percent_cpu, percent_memory, time, command, created_at FROM ' + gpu.table + ' WHERE created_at >="' + time_str + '" AND host="' + host + '"'
+			query = 'SELECT id, host, gpu, temp, power, memory, gpu_util, created_at FROM ' + gpu.table + ' WHERE created_at >="' + time_str + '" AND host="' + host + '"'
 			cursor.execute(query)
 			data = cursor.fetchall()
 			cursor.close()
@@ -140,32 +135,27 @@ class GpuController(Controller):
 					'id': item[0],
 					'host': item[1],
 					'gpu': item[2],
-					'pid': item[3],
-					'user': item[4],
-					'gpu_memory': item[5],
-					'percent_cpu': item[6],
-					'percent_memory': item[7],
-					'time': str(item[8]) if (item[8]) else None,
-					'command': item[9],
-					'created_at': str(item[10])
+					'temp': item[3],
+					'power': item[4],
+					'memory': item[5],
+					'gpu_util': item[6],
+					'created_at': str(item[7])
 				})
 
 		return array
 
 	@staticmethod
-	def get_latest_gpus(db):
+	def get_latest(db):
 
 		# parse parameters
 		#
 		host = request.args.get('host')
 
 		if (host):
-			return GpuController.get_latest_gpus_by_host(db, host)
+			return GpuController.get_latest_by_host(db, host)
 		else:
 			array = []
 			hosts = GpuController.get_hosts(db)
 			for host in hosts:
-				gpus = GpuController.get_latest_gpus_by_host(db, host)
-				array += gpus
+				array += GpuController.get_latest_by_host(db, host)
 			return array
-

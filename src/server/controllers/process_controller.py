@@ -1,10 +1,10 @@
 ################################################################################
 #                                                                              #
-#                            storage_controller.py                             #
+#                            process_controller.py                             #
 #                                                                              #
 ################################################################################
 #                                                                              #
-#        This controller is used to handle requests for storage info.          #
+#        This controller is used to handle requests for process info.          #
 #                                                                              #
 #        Author(s): Abe Megahed                                                #
 #                                                                              #
@@ -16,9 +16,9 @@ import datetime
 import flask
 from flask import request
 from controllers.controller import Controller
-from models.storage import Storage
+from models.process import Process
 
-class StorageController(Controller):
+class ProcessController(Controller):
 
 	#
 	# posting methods
@@ -30,22 +30,34 @@ class StorageController(Controller):
 		# parse parameters
 		#
 		host = request.form.get('host')
-		amount = request.form.get('amount')
-		directory = request.form.get('directory')
+		gpu = request.form.get('gpu')
+		pid = request.form.get('pid')
+		user = request.form.get('user')
+		gpu_memory = request.form.get('gpu_memory')
+		percent_cpu = request.form.get('percent_cpu')
+		percent_memory = request.form.get('percent_memory')
+		time = request.form.get('time')
+		command = request.form.get('command')
 
-		# create gpu log object
+		# create process object
 		#
-		storage = Storage({
+		process = Process({
 			'host': host,
-			'amount': amount,
-			'directory': directory,
+			'gpu': gpu,
+			'pid': pid,
+			'user': user,
+			'gpu_memory': gpu_memory,
+			'percent_cpu': percent_cpu,
+			'percent_memory': percent_memory,
+			'time': time,
+			'command': command,
 			'created_at': datetime.datetime.now()
 		})
 
 		# store data
 		#
 		connection = Controller.connect(db)
-		storage.save(connection)
+		process.save(connection)
 		connection.close()
 
 		# return response
@@ -58,16 +70,16 @@ class StorageController(Controller):
 
 	@staticmethod
 	def get_hosts(db):
-		storage = Storage()
+		process = Process()
 
 		# fetch data from database
 		#
 		connection = Controller.connect(db)
 		cursor = connection.cursor()
-		query = 'SELECT DISTINCT host FROM ' + storage.table;
+		query = 'SELECT DISTINCT host FROM ' + process.table;
 		cursor.execute(query)
 		data = cursor.fetchall()
-		cursor.close() 
+		cursor.close()
 		connection.close()
 
 		# format data
@@ -79,13 +91,13 @@ class StorageController(Controller):
 
 	@staticmethod
 	def get_latest_time(db, host):
-		storage = Storage()
+		process = Process()
 
 		# fetch time from database
 		#
 		connection = Controller.connect(db)
 		cursor = connection.cursor()
-		query = 'SELECT MAX(created_at) FROM ' + storage.table + ' WHERE host="' + host + '" LIMIT 1'
+		query = 'SELECT MAX(created_at) FROM ' + process.table + ' WHERE host="' + host + '" LIMIT 1'
 		cursor.execute(query)
 		latest_time = cursor.fetchone()
 		cursor.close() 
@@ -98,11 +110,11 @@ class StorageController(Controller):
 
 	@staticmethod
 	def get_latest_by_host(db, host):
-		storage = Storage()
+		process = Process()
 
 		# get most recent time logged for this host
 		#
-		time_str = StorageController.get_latest_time(db, host)
+		time_str = ProcessController.get_latest_time(db, host)
 
 		# get rows at most recent time
 		#
@@ -112,7 +124,7 @@ class StorageController(Controller):
 			#
 			connection = Controller.connect(db)
 			cursor = connection.cursor()
-			query = 'SELECT id, host, amount, directory, created_at FROM ' + storage.table + ' WHERE created_at >="' + time_str + '" AND host="' + host + '"'
+			query = 'SELECT id, host, gpu, pid, user, gpu_memory, percent_cpu, percent_memory, time, command, created_at FROM ' + process.table + ' WHERE created_at >="' + time_str + '" AND host="' + host + '"'
 			cursor.execute(query)
 			data = cursor.fetchall()
 			cursor.close()
@@ -120,7 +132,7 @@ class StorageController(Controller):
 		else:
 			data = None
 
-		# format database fields
+		# format data
 		#
 		array = []
 		if (data):
@@ -128,9 +140,15 @@ class StorageController(Controller):
 				array.append({
 					'id': item[0],
 					'host': item[1],
-					'amount': item[2],
-					'directory': item[3],
-					'created_at': str(item[4])
+					'gpu': item[2],
+					'pid': item[3],
+					'user': item[4],
+					'gpu_memory': item[5],
+					'percent_cpu': item[6],
+					'percent_memory': item[7],
+					'time': str(item[8]) if (item[8]) else None,
+					'command': item[9],
+					'created_at': str(item[10])
 				})
 
 		return array
@@ -143,11 +161,11 @@ class StorageController(Controller):
 		host = request.args.get('host')
 
 		if (host):
-			return StorageController.get_latest_by_host(db, host)
+			return ProcessController.get_latest_by_host(db, host)
 		else:
 			array = []
-			hosts = StorageController.get_hosts(db)
+			hosts = ProcessController.get_hosts(db)
 			for host in hosts:
-				storage = StorageController.get_latest_by_host(db, host)
-				array += storage
+				array += ProcessController.get_latest_by_host(db, host)
 			return array
+

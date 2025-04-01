@@ -6,8 +6,8 @@
 # https://github.com/Sequel-Ace/Sequel-Ace
 #
 # Host: 127.0.0.1 (MySQL 5.7.39)
-# Database: olvi
-# Generation Time: 2025-03-26 18:32:28 +0000
+# Database: dashboard
+# Generation Time: 2025-04-01 20:14:45 +0000
 # ************************************************************
 
 
@@ -26,6 +26,25 @@ SET NAMES utf8mb4;
 DROP TABLE IF EXISTS `gpus`;
 
 CREATE TABLE `gpus` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `host` varchar(255) DEFAULT NULL,
+  `gpu` int(11) DEFAULT NULL,
+  `temp` int(11) DEFAULT NULL,
+  `power` int(11) DEFAULT NULL,
+  `memory` int(11) DEFAULT NULL,
+  `gpu_util` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table processes
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `processes`;
+
+CREATE TABLE `processes` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `host` varchar(256) DEFAULT NULL,
   `gpu` int(11) DEFAULT NULL,

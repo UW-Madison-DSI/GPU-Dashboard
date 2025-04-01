@@ -1,10 +1,10 @@
 /******************************************************************************\
 |                                                                              |
-|                                 cpu-chart.js                                 |
+|                             gpu-memory-chart.js                              |
 |                                                                              |
 |******************************************************************************|
 |                                                                              |
-|        This is a bar chart for displaying cpu usage statistics.              |
+|        This is a bar chart for displaying gpu usage statistics.              |
 |                                                                              |
 |        Author(s): Abe Megahed                                                |
 |                                                                              |
@@ -15,7 +15,7 @@
 |     Copyright (C) 2025, Data Science Institute, University of Wisconsin      |
 \******************************************************************************/
 
-class CpuChart {
+class GpuMemoryChart {
 
 	//
 	// methods
@@ -41,36 +41,8 @@ class CpuChart {
 	}
 
 	//
-	// fetching methods
+	// getting methods
 	//
-
-	update() {
-		$.ajax({
-			url: this.server + '/gpus/latest?host=' + this.host,
-			type: 'GET',
-			crossDomain: true,
-			headers: {
-				"Access-Control-Allow-Origin": "*"
-			},
-
-			// callbacks
-			//
-			success: (data) => {
-				this.users = this.getUsers(data);
-				this.render();
-			}
-		});
-	}
-
-	getUsers(data) {
-		let names = this.getUserNames(data);
-		let users = [];
-		for (let i = 0; i < names.length; i++) {
-			let name = names[i];
-			users.push(this.getUser(name, data));
-		}
-		return users;
-	}
 
 	getUserNames(data) {
 		let names = [];
@@ -83,6 +55,16 @@ class CpuChart {
 		return names;
 	}
 
+	getUsers(data) {
+		let names = this.getUserNames(data);
+		let users = [];
+		for (let i = 0; i < names.length; i++) {
+			let name = names[i];
+			users.push(this.getUser(name, data));
+		}
+		return users;
+	}
+
 	getGpuNames() {
 		let names = [];
 		for (let i = 0; i < this.num_gpus; i++) {
@@ -91,29 +73,29 @@ class CpuChart {
 		return names;
 	}
 
-	getCpuLoadsByUser(name, data) {
+	getGpuMemoriesByUser(name, data) {
 		let memories = [];
 		for (let i = 0; i < this.num_gpus; i++) {
-			memories.push(this.getCpuLoadByUser(i, name, data))
+			memories.push(this.getGpuMemoryByUser(i, name, data))
 		}
 		return memories;
 	}
 
-	getCpuLoadByUser(index, name, data) {
-		let load = 0;
+	getGpuMemoryByUser(index, name, data) {
+		let memory = 0;
 		for (let i = 0; i < data.length; i++) {
 			let gpu = data[i];
 			if (gpu.user == name && gpu.gpu == index) {
-				load += gpu.percent_cpu;
+				memory += gpu.gpu_memory / 1000;
 			}
 		}
-		return load;
+		return memory;
 	}
 
 	getUser(name, data) {
 		return {
 			x: this.getGpuNames(),
-			y: this.getCpuLoadsByUser(name, data),
+			y: this.getGpuMemoriesByUser(name, data),
 			name: name,
 			type: 'bar'
 		};
@@ -136,9 +118,9 @@ class CpuChart {
 			},
 			yaxis: {
 				title: {
-					text: 'CPU Load (%)'
+					text: 'GPU Memory (GB)'
 				},
-				// range: [0, 100]
+				range: [0, this.gpu_memory]
 			}
 		};
 

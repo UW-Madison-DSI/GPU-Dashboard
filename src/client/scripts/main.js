@@ -104,9 +104,6 @@ function setTheme(theme) {
 //
 
 function fetchGpuData(options) {
-
-	// fetch gpu data
-	//
 	$.ajax({
 		url: server + '/gpus/latest',
 		type: 'GET',
@@ -121,10 +118,22 @@ function fetchGpuData(options) {
 	});
 }
 
-function fetchStorageData(options) {
+function fetchProcessData(options) {
+	$.ajax({
+		url: server + '/processes/latest',
+		type: 'GET',
+		crossDomain: true,
+		headers: {
+			"Access-Control-Allow-Origin": "*"
+		},
 
-	// fetch gpu data
-	//
+		// callbacks
+		//
+		success: options.success
+	});
+}
+
+function fetchStorageData(options) {
 	$.ajax({
 		url: server + '/storage/latest',
 		type: 'GET',
@@ -149,12 +158,12 @@ function showGpuCharts(data) {
 
 	// show charts
 	//
-	let olvi1GpuChart = new GpuChart({
+	let olvi1Chart = new GpuMemoryChart({
 		title: 'Olvi-1 GPU Memory',
 		element: $('#olvi-1-gpu-memory .chart')[0],
 		data: olvi1Data
 	});
-	let olvi2GpuChart = new GpuChart({
+	let olvi2Chart = new GpuMemoryChart({
 		title: 'Olvi-2 GPU Memory',
 		element: $('#olvi-2-gpu-memory .chart')[0],
 		data: olvi2Data
@@ -178,12 +187,12 @@ function showCpuCharts(data) {
 
 	// show charts
 	//
-	let olvi1CpuChart = new CpuChart({
+	let olvi1Chart = new CpuLoadChart({
 		title: 'Olvi-1 CPU Load',
 		element: $('#olvi-1-cpu-load .chart')[0],
 		data: olvi1Data
 	});
-	let olvi2CpuChart = new CpuChart({
+	let olvi2Chart = new CpuLoadChart({
 		title: 'Olvi-2 CPU Load',
 		element: $('#olvi-2-cpu-load .chart')[0],
 		data: olvi2Data
@@ -207,12 +216,12 @@ function showMemoryCharts(data) {
 
 	// show charts
 	//
-	let olvi1MemoryChart = new MemoryChart({
+	let olvi1Chart = new MemoryChart({
 		title: 'Olvi-1 Memory',
 		element: $('#olvi-1-memory .chart')[0],
 		data: olvi1Data
 	});
-	let olvi2MemoryChart = new MemoryChart({
+	let olvi2Chart = new MemoryChart({
 		title: 'Olvi-2 Memory',
 		element: $('#olvi-2-memory .chart')[0],
 		data: olvi2Data
@@ -236,12 +245,12 @@ function showStorageCharts(data) {
 
 	// storage charts
 	//
-	let olvi1StorageChart = new StorageChart({
+	let olvi1Chart = new StorageChart({
 		title: 'Olvi-1 Storage',
 		element: $('#olvi-1-storage .chart')[0],
 		data: olvi1Data
 	});
-	let olvi2StorageChart = new StorageChart({
+	let olvi2Chart = new StorageChart({
 		title: 'Olvi-2 Storage',
 		element: $('#olvi-2-storage .chart')[0],
 		data: olvi2Data
@@ -256,6 +265,35 @@ function showStorageCharts(data) {
 	if (olvi2Data.length > 0) {
 		let date = new Date(olvi2Data[0].created_at + 'Z');
 		this.showDate($('#olvi-2-storage .updated'), date);
+	}
+}
+
+function showTempCharts(data) {
+	let olvi1Data = getDataByHost(data, 'olvi-1');
+	let olvi2Data = getDataByHost(data, 'olvi-2');
+
+	// temp charts
+	//
+	let olvi1Chart = new GpuTempChart({
+		title: 'Olvi-1 GPU Temp',
+		element: $('#olvi-1-gpu-temp .chart')[0],
+		data: olvi1Data
+	});
+	let olvi2Chart = new GpuTempChart({
+		title: 'Olvi-2 GPU Temp',
+		element: $('#olvi-2-gpu-temp .chart')[0],
+		data: olvi2Data
+	});
+
+	// show dates
+	//
+	if (olvi1Data.length > 0) {
+		let date = new Date(olvi1Data[0].created_at + 'Z');
+		this.showDate($('#olvi-1-gpu-temp .updated'), date);
+	}
+	if (olvi2Data.length > 0) {
+		let date = new Date(olvi2Data[0].created_at + 'Z');
+		this.showDate($('#olvi-2-gpu-temp .updated'), date);
 	}
 }
 
@@ -274,7 +312,7 @@ window.onload = function() {
 
 	// fetch and show data
 	//
-	this.fetchGpuData({
+	this.fetchProcessData({
 
 		// callbacks
 		//
@@ -283,12 +321,21 @@ window.onload = function() {
 			showCpuCharts(data);
 			showMemoryCharts(data);
 
-			this.fetchStorageData({
+			this.fetchGpuData({
 
 				// callbacks
 				//
 				success: (data) => {
-					showStorageCharts(data);
+					showTempCharts(data);
+
+					this.fetchStorageData({
+
+						// callbacks
+						//
+						success: (data) => {
+							showStorageCharts(data);
+						}
+					});
 				}
 			});
 		}
@@ -309,6 +356,9 @@ window.onload = function() {
 	});
 	$('a#storage').click(() => {
 		window.location.hash = 'storage';
+	});
+	$('a#temp').click(() => {
+		window.location.hash = 'temp';
 	});
 
 	// set initial tab

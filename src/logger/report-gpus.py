@@ -23,7 +23,8 @@ import subprocess
 # variables
 #
 
-url = 'https://olvi-dashboard-api.services.dsi.wisc.edu/gpu'
+# url = 'https://olvi-dashboard-api.services.dsi.wisc.edu'
+url = 'http://localhost:5000'
 
 #
 # functions
@@ -70,20 +71,63 @@ def parse_file(filename):
 			lines.append(line)
 	return lines
 
-def parse_stats(lines):
+def parse_gpus(lines):
 
 	"""
-	Parse stats from lines of text.
+	Parse gpu stats from lines of text.
 
 	Args:
-		command: The shell command to run (string).
+		lines: The text lines to parse.
 
 	Returns:
-		A list of strings, where each string is a line of the command's output.
-		Returns None if the command fails.
+		An array of objects.
 	"""
 
-	data = []
+	gpus = []
+	count = 0
+	line_number = 9
+	for gpu in range(0,8):
+		line = lines[line_number]
+
+		# strip start / end delimiters
+		#
+		line = line[2:-2]
+
+		# break line by whitespace
+		#
+		items = line.split()
+		# print("ITEMS: ")
+		# print(items)
+
+		# parse individual fields
+		#
+		gpus.append({
+			# 'host': 'olvi-2',
+			'host': platform.node(),
+			'gpu': gpu,
+			'temp': int(items[1].replace('C', '')),
+			'power': int(items[3].replace('W', '')),
+			'memory': int(items[7].replace('MiB', '')),
+			'gpu_util': int(items[11].replace('%', '')),
+		})
+
+		line_number += 4
+
+	return gpus
+
+def parse_processes(lines):
+
+	"""
+	Parse process stats from lines of text.
+
+	Args:
+		lines: The text lines to parse.
+
+	Returns:
+		An array of objects.
+	"""
+
+	processes = []
 	count = 0
 	for line in lines:
 		count += 1
@@ -91,6 +135,9 @@ def parse_stats(lines):
 		# parse each line
 		#
 		if (count > 43 and not line.startswith('+')):
+
+			# strip start / end delimiters
+			#
 			line = line[2:-2]
 
 			# break line by whitespace
@@ -99,7 +146,8 @@ def parse_stats(lines):
 
 			# parse individual fields
 			#
-			data.append({
+			processes.append({
+				# 'host': 'olvi-2',
 				'host': platform.node(),
 				'gpu': int(items[0]),
 				'pid': int(items[1]),
@@ -111,17 +159,30 @@ def parse_stats(lines):
 				'command': ' '.join(items[7:])
 			})
 
-	return data
+	return processes
 
 #
 # main
 #
 
 if __name__ == '__main__':
-	lines = run_command('/afs/cs.wisc.edu/u/a/m/amegahed/.local/bin/nvidia-htop.py -l')
-	data = parse_stats(lines)
+	lines = parse_file('test/olvi1-output.txt')
+	# lines = run_command('/afs/cs.wisc.edu/u/a/m/amegahed/.local/bin/nvidia-htop.py -l')
+	gpus = parse_gpus(lines)
+	processes = parse_processes(lines)
 
-	for item in data:
-		# print(item)
-		response = requests.post(url, data=item)
+	print();
+
+	print("GPUs:")
+	for gpu in gpus:
+		# print("GPU:")
+		# print(gpu)
+		response = requests.post(url + '/gpus', data=gpu)
+		print(response)
+
+	print("Processes:")
+	for process in processes:
+		# print("Process:")
+		# print(process)
+		response = requests.post(url + '/processes', data=process)
 		print(response)

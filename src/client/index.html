@@ -27,10 +27,11 @@
 		<script type="text/javascript" src="vendor/bootstrap/js/tab.js"></script>
 
 		<!-- custom scripts -->
-		<script type="text/javascript" src="scripts/gpu-chart.js"></script>
-		<script type="text/javascript" src="scripts/cpu-chart.js"></script>
+		<script type="text/javascript" src="scripts/gpu-memory-chart.js"></script>
+		<script type="text/javascript" src="scripts/cpu-load-chart.js"></script>
 		<script type="text/javascript" src="scripts/memory-chart.js"></script>
 		<script type="text/javascript" src="scripts/storage-chart.js"></script>
+		<script type="text/javascript" src="scripts/gpu-temp-chart.js"></script>
 		<script type="text/javascript" src="scripts/main.js"></script>
 	</head>
 
@@ -52,6 +53,11 @@
 				<li role="presentation" class="gpu-memory-tab active">
 					<a id="gpu" role="tab" data-toggle="tab" href=".gpu-memory.tab-pane">
 						<label>GPU Memory</label>
+					</a>
+				</li>
+				<li role="presentation" class="temp-tab">
+					<a id="temp" role="tab" data-toggle="tab" href=".temp.tab-pane">
+						<label>GPU Temp</label>
 					</a>
 				</li>
 				<li role="presentation" class="cpu-load-tab">
@@ -89,7 +95,22 @@
 					</div>
 				</div>
 			</div>
-			
+
+			<div role="tabpanel" class="temp tab-pane">
+				<div id="olvi-1-gpu-temp" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+				<div id="olvi-2-gpu-temp" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+			</div>
+
 			<div role="tabpanel" class="cpu-load tab-pane">
 				<div id="olvi-1-cpu-load" class="tab-panel">
 					<div class="chart"></div>

@@ -1,10 +1,10 @@
 /******************************************************************************\
 |                                                                              |
-|                               memory-chart.js                                |
+|                              cpu-load-chart.js                               |
 |                                                                              |
 |******************************************************************************|
 |                                                                              |
-|        This is a bar chart for displaying memory usage statistics.           |
+|        This is a bar chart for displaying cpu usage statistics.              |
 |                                                                              |
 |        Author(s): Abe Megahed                                                |
 |                                                                              |
@@ -15,7 +15,7 @@
 |     Copyright (C) 2025, Data Science Institute, University of Wisconsin      |
 \******************************************************************************/
 
-class MemoryChart {
+class CpuLoadChart {
 
 	//
 	// methods
@@ -29,6 +29,7 @@ class MemoryChart {
 		this.element = attributes.element;
 		this.data = attributes.data;
 		this.num_gpus = 8;
+		this.gpu_memory = 40;
 		this.users = this.getUsers(this.data);
 
 		// show chart
@@ -72,29 +73,29 @@ class MemoryChart {
 		return names;
 	}
 
-	getMemoriesByUser(name, data) {
+	getCpuLoadsByUser(name, data) {
 		let memories = [];
 		for (let i = 0; i < this.num_gpus; i++) {
-			memories.push(this.getMemoryByUser(i, name, data))
+			memories.push(this.getCpuLoadByUser(i, name, data))
 		}
 		return memories;
 	}
 
-	getMemoryByUser(index, name, data) {
-		let memory = 0;
+	getCpuLoadByUser(index, name, data) {
+		let load = 0;
 		for (let i = 0; i < data.length; i++) {
 			let gpu = data[i];
 			if (gpu.user == name && gpu.gpu == index) {
-				memory += gpu.percent_memory * 100;
+				load += gpu.percent_cpu;
 			}
 		}
-		return memory;
+		return load;
 	}
 
 	getUser(name, data) {
 		return {
 			x: this.getGpuNames(),
-			y: this.getMemoriesByUser(name, data),
+			y: this.getCpuLoadsByUser(name, data),
 			name: name,
 			type: 'bar'
 		};
@@ -117,7 +118,7 @@ class MemoryChart {
 			},
 			yaxis: {
 				title: {
-					text: 'Memory (%)'
+					text: 'CPU Load (%)'
 				},
 				// range: [0, 100]
 			}

@@ -16,29 +16,31 @@ import config
 import mysql.connector
 from flask import Flask
 from controllers.gpu_controller import GpuController
+from controllers.process_controller import ProcessController
 from controllers.storage_controller import StorageController
 from flask_cors import CORS
 
 ################################################################################
 #                                   globals                                    #
 ################################################################################
+local = False
 
-'''
-db = {
-	'host': 'db',
-	'port': 3306,
-	'username': 'webuser',
-	'password': 'password',
-	'database': 'dashboard'	
-}
-'''
-db = {
-	'host': 'localhost',
-	'port': 3306,
-	'username': 'root',
-	'password': 'root',
-	'database': 'dashboard'
-}
+if (local):
+	db = {
+		'host': 'localhost',
+		'port': 3306,
+		'username': 'root',
+		'password': 'root',
+		'database': 'dashboard'
+	}
+else:
+	db = {
+		'host': 'db',
+		'port': 3306,
+		'username': 'webuser',
+		'password': 'password',
+		'database': 'dashboard'	
+	}
 
 ################################################################################
 #                                initialization                                #
@@ -58,7 +60,7 @@ app.config.from_object(config)
 # post routes
 #
 
-@app.post('/gpu')
+@app.post('/gpus')
 def post_gpu():
 
 	"""
@@ -69,6 +71,18 @@ def post_gpu():
 	"""
 
 	return GpuController.post_create(db)
+
+@app.post('/processes')
+def post_process():
+
+	"""
+	Post gpu information.
+
+	Return
+		object: The parsed gpu parameters.
+	"""
+
+	return ProcessController.post_create(db)
 
 @app.post('/storage')
 def post_storage():
@@ -108,7 +122,7 @@ def get_hosts():
 		list of host names.
 	"""
 
-	return GpuController.get_hosts(db)
+	return ProcessController.get_hosts(db)
 
 @app.get('/gpus/latest')
 def get_latest_gpus():
@@ -120,7 +134,19 @@ def get_latest_gpus():
 		list of gpu info.
 	"""
 
-	return GpuController.get_latest_gpus(db)
+	return GpuController.get_latest(db)
+
+@app.get('/processes/latest')
+def get_latest_processes():
+
+	"""
+	Post most recent GPU process information.
+
+	Return
+		list of process info.
+	"""
+
+	return ProcessController.get_latest(db)
 
 @app.get('/storage/latest')
 def get_latest_storage():
@@ -132,7 +158,7 @@ def get_latest_storage():
 		list of storage info.
 	"""
 
-	return StorageController.get_latest_storage(db)
+	return StorageController.get_latest(db)
 
 ################################################################################
 #                                     main                                     #

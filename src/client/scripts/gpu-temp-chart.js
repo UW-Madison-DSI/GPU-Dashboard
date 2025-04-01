@@ -1,10 +1,10 @@
 /******************************************************************************\
 |                                                                              |
-|                                 gpu-chart.js                                 |
+|                              gpu-temp-chart.js                               |
 |                                                                              |
 |******************************************************************************|
 |                                                                              |
-|        This is a bar chart for displaying gpu usage statistics.              |
+|        This is a bar chart for displaying gpu temp statistics.               |
 |                                                                              |
 |        Author(s): Abe Megahed                                                |
 |                                                                              |
@@ -15,7 +15,7 @@
 |     Copyright (C) 2025, Data Science Institute, University of Wisconsin      |
 \******************************************************************************/
 
-class GpuChart {
+class GpuTempChart {
 
 	//
 	// methods
@@ -29,8 +29,7 @@ class GpuChart {
 		this.element = attributes.element;
 		this.data = attributes.data;
 		this.num_gpus = 8;
-		this.gpu_memory = 40;
-		this.users = this.getUsers(this.data);
+		this.temps = this.getTemps(this.data);
 
 		// show chart
 		//
@@ -44,25 +43,19 @@ class GpuChart {
 	// getting methods
 	//
 
-	getUserNames(data) {
-		let names = [];
-		for (let i = 0; i < data.length; i++) {
-			let name = data[i].user;
-			if (!names.includes(name)) {
-				names.push(name);
-			}
-		}
-		return names;
-	}
+	getTemps() {
+		let names = this.getGpuNames();
+		let temps = this.getGpuTemps();
+		let colors = this.getGpuColors(temps);
 
-	getUsers(data) {
-		let names = this.getUserNames(data);
-		let users = [];
-		for (let i = 0; i < names.length; i++) {
-			let name = names[i];
-			users.push(this.getUser(name, data));
-		}
-		return users;
+		return [{
+			x: names,
+			y: temps,
+			marker: {
+				color: colors
+			},
+			type: 'bar'
+		}];
 	}
 
 	getGpuNames() {
@@ -73,32 +66,53 @@ class GpuChart {
 		return names;
 	}
 
-	getGpuMemoriesByUser(name, data) {
-		let memories = [];
+	getGpuTemps() {
+		let temps = []
 		for (let i = 0; i < this.num_gpus; i++) {
-			memories.push(this.getGpuMemoryByUser(i, name, data))
+			temps.push(this.getTempByGpu(i));
 		}
-		return memories;
+		return temps;
 	}
 
-	getGpuMemoryByUser(index, name, data) {
-		let memory = 0;
-		for (let i = 0; i < data.length; i++) {
-			let gpu = data[i];
-			if (gpu.user == name && gpu.gpu == index) {
-				memory += gpu.gpu_memory / 1000;
+	getGpuColors(temps) {
+		let colors = []
+		for (let i = 0; i < temps.length; i++) {
+			colors.push(this.getGpuColor(temps[i]));
+		}
+		return colors;
+	}
+
+	getGpuColor(temp) {
+		let high = 50;
+		let low = 0;
+		let t = (temp - low) / (high - low);
+		let highColor = [255, 0, 0];
+		let midColor = [0, 255, 0];
+		let lowColor = [0, 0, 255];
+		let r, g, b;
+
+		if (t > 0.5) {
+			t = (t - 0.5) * 2;
+			r = midColor[0] * (1 - t) + highColor[0] * t;
+			g = midColor[1] * (1 - t) + highColor[1] * t;
+			b = midColor[2] * (1 - t) + highColor[2] * t;
+		} else {
+			t = t * 2;
+			r = lowColor[0] * (1 - t) + midColor[0] * t;
+			g = lowColor[1] * (1 - t) + midColor[1] * t;
+			b = lowColor[2] * (1 - t) + midColor[2] * t;
+		}
+
+		return 'rgb(' + r + ',' + g + ',' + b + ')';
+	}
+
+	getTempByGpu(index) {
+		for (let i = 0; i < this.data.length; i++) {
+			let gpu = this.data[i];
+			if (gpu.gpu == index) {
+				return gpu.temp
 			}
 		}
-		return memory;
-	}
-
-	getUser(name, data) {
-		return {
-			x: this.getGpuNames(),
-			y: this.getGpuMemoriesByUser(name, data),
-			name: name,
-			type: 'bar'
-		};
 	}
 
 	//
@@ -108,8 +122,7 @@ class GpuChart {
 	render() {
 		let layout = {
 			title: this.title,
-			showlegend: true,
-			barmode: 'stack',
+			showlegend: false,
 			width: $(this.element).width(),
 			xaxis: {
 				title: {
@@ -118,9 +131,9 @@ class GpuChart {
 			},
 			yaxis: {
 				title: {
-					text: 'GPU Memory (GB)'
+					text: 'Temp (C)'
 				},
-				range: [0, this.gpu_memory]
+				range: [0, 50]
 			}
 		};
 
@@ -128,6 +141,6 @@ class GpuChart {
 			displayModeBar: false
 		}
 
-		Plotly.newPlot(this.element, this.users, layout, config);
+		Plotly.newPlot(this.element, this.temps, layout, config);
 	}
 }

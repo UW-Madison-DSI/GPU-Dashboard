@@ -1,10 +1,10 @@
 ################################################################################
 #                                                                              #
-#                                   gpu.py                                     #
+#                                 process.py                                   #
 #                                                                              #
 ################################################################################
 #                                                                              #
-#        This is a model for managing gpu information.                         #
+#        This is a model for managing process information.                     #
 #                                                                              #
 #        Author(s): Abe Megahed                                                #
 #                                                                              #
@@ -17,7 +17,7 @@
 
 from models.model import Model
 
-class Gpu(Model):
+class Process(Model):
 
 	#
 	# constructor
@@ -34,5 +34,5 @@ class Gpu(Model):
 
 		# set attributes
 		#
-		self.table = 'gpus'
+		self.table = 'processes'
 		self.attributes = attributes;

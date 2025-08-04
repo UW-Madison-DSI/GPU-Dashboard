@@ -4,7 +4,7 @@
 #                                                                              #
 ################################################################################
 #                                                                              #
-#        This is a model for managing gpu usage information.                   #
+#        This is a model for managing gpu information.                         #
 #                                                                              #
 #        Author(s): Abe Megahed                                                #
 #                                                                              #

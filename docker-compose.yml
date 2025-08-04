@@ -1,15 +1,14 @@
 services:
 
   www:
+    image: httpd:latest
     depends_on:
       - server
-    image: httpd:latest
+    ports:
+      - "80:80"
     volumes:
       - ./src/client:/usr/local/apache2/htdocs
       - ./data:/var/www/data
-    ports:
-      - 80:80
-      - 443:443
     networks:
       - network
 
@@ -42,6 +41,7 @@ services:
       - "3306:3306"
     volumes:
       - ./database:/docker-entrypoint-initdb.d
+      - ./mysql:/var/lib/mysql
     networks:
       - network
 

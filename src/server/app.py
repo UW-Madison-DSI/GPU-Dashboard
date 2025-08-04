@@ -16,18 +16,21 @@ import config
 import mysql.connector
 from flask import Flask
 from controllers.gpu_controller import GpuController
+from controllers.process_controller import ProcessController
 from controllers.storage_controller import StorageController
 from flask_cors import CORS
 
 ################################################################################
 #                                   globals                                    #
-################################################################################
+################################################################################ 
 
-host = 'db'
-port = 3306
-username = 'webuser'
-password = 'password'
-database = 'dashboard'
+db = {
+	'host': config.DB_HOST,
+	'port': config.DB_PORT,
+	'username': config.DB_USERNAME,
+	'password': config.DB_PASSWORD,
+	'database': config.DB_DATABASE	
+}
 
 ################################################################################
 #                                initialization                                #
@@ -47,7 +50,7 @@ app.config.from_object(config)
 # post routes
 #
 
-@app.post('/gpu')
+@app.post('/gpus')
 def post_gpu():
 
 	"""
@@ -58,6 +61,18 @@ def post_gpu():
 	"""
 
 	return GpuController.post_create(db)
+
+@app.post('/processes')
+def post_process():
+
+	"""
+	Post gpu information.
+
+	Return
+		object: The parsed gpu parameters.
+	"""
+
+	return ProcessController.post_create(db)
 
 @app.post('/storage')
 def post_storage():
@@ -87,14 +102,18 @@ def get_test():
 
 	return "<h1>Welcome to the GPU Dashboard Server!</h1>"
 
-@app.get('/hosts')
-def get_hosts():
+#
+# get gpu routes
+#
+
+@app.get('/gpus/hosts')
+def get_gpu_hosts():
 
 	"""
-	Get host information.
+	Get gpu host information.
 
 	Return
-		list of host names.
+		list of hosts.
 	"""
 
 	return GpuController.get_hosts(db)
@@ -109,7 +128,51 @@ def get_latest_gpus():
 		list of gpu info.
 	"""
 
-	return GpuController.get_latest_gpus(db)
+	return GpuController.get_latest(db)
+
+#
+# get process routes
+#
+
+@app.get('/processes/hosts')
+def get_process_hosts():
+
+	"""
+	Get process host information.
+
+	Return
+		list of hosts.
+	"""
+
+	return ProcessController.get_hosts(db)
+
+@app.get('/processes/latest')
+def get_latest_processes():
+
+	"""
+	Post most recent GPU process information.
+
+	Return
+		list of process info.
+	"""
+
+	return ProcessController.get_latest(db)
+
+#
+# get storage routes
+#
+
+@app.get('/storage/hosts')
+def get_storage_hosts():
+
+	"""
+	Get storage host information.
+
+	Return
+		list of hosts.
+	"""
+
+	return StorageController.get_hosts(db)
 
 @app.get('/storage/latest')
 def get_latest_storage():
@@ -121,32 +184,38 @@ def get_latest_storage():
 		list of storage info.
 	"""
 
-	return StorageController.get_latest_storage(db)
+	return StorageController.get_latest(db)
+
+@app.get('/storage/younger/<days>')
+def get_younger_storage(days):
+
+	"""
+	Get information on storage younger than a certain number of days.
+
+	Return
+		list of storage info.
+	"""
+
+	return StorageController.get_younger(db, days)
+
+@app.get('/storage/older/<days>')
+def get_older_storage(days):
+
+	"""
+	Get information on storage older than a certain number of days.
+
+	Return
+		list of storage info.
+	"""
+
+	return StorageController.get_older(db, days)
 
 ################################################################################
 #                                     main                                     #
 ################################################################################
 
 if __name__ == '__main__':
-	app.debug = True
-
-	# connect to database
-	#
-	try:
-		db = mysql.connector.connect(
-			host = host,
-			port = port,
-			user = username,
-			password = password,
-			database = database
-		)
-		print("Connected to database " + database)
-	except Exception as e:
-		print("Could not connect to database " + database + " at " + host)
-		print(str(e))
-		exit()
-
 	if (app.config['PORT'] == 443):
-		app.run(host=app.config['HOST'], port=443, ssl_context=(app.config['SSL_CERT'], app.config['SSL_KEY']))
+		app.run(host=app.config['HOST'], port=443, ssl_context=(app.config['SSL_CERT'], app.config['SSL_KEY']), threaded=True, debug=True)
 	else:
-		app.run(host=app.config['HOST'], port=app.config['PORT'])
+		app.run(host=app.config['HOST'], port=app.config['PORT'], threaded=True, debug=True)

@@ -206,6 +206,11 @@ class Model:
 			Object
 		"""
 
+		# make sure we have a db to insert into
+		#
+		if not db:
+			return
+
 		# add new row to database
 		#
 		cursor = db.cursor()

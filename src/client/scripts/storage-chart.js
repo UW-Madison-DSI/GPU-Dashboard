@@ -28,9 +28,6 @@ class StorageChart {
 		this.title = attributes.title;
 		this.element = attributes.element;
 		this.data = attributes.data;
-		this.num_gpus = 8;
-		this.gpu_memory = 40;
-		// this.directories = this.getDirectories(this.data);
 		this.show_other = true;
 
 		// show chart
@@ -65,15 +62,15 @@ class StorageChart {
 		let total = 0;
 		for (let i = 0; i < data.length; i++) {
 			let percentage = 0;
-			let amount = data[i].amount;
-			if (amount.includes('T')) {
-				percentage = parseFloat(amount.replace('T', '')) / 15 * 100;
+			let size = data[i].size;
+			if (size.includes('T')) {
+				percentage = parseFloat(size.replace('T', '')) / 15 * 100;
 			}
-			if (amount.includes('G')) {
-				percentage = parseFloat(amount.replace('G', '')) / 15000 * 100;
+			if (size.includes('G')) {
+				percentage = parseFloat(size.replace('G', '')) / 15000 * 100;
 			}
-			if (amount.includes('M')) {
-				percentage = parseFloat(amount.replace('M', '')) / 15000000 * 100;
+			if (size.includes('M')) {
+				percentage = parseFloat(size.replace('M', '')) / 15000000 * 100;
 			}
 			total += percentage;
 			percentages.push(percentage);
@@ -84,29 +81,29 @@ class StorageChart {
 		return percentages;
 	}
 
-	getStorageAmounts(data) {
+	getStorageSizes(data) {
 		let dirnames = this.getDirectoryNames(data);
-		let amounts = [];
+		let sizes = [];
 		let total = 0;
 		for (let i = 0; i < data.length; i++) {
 			let storage = 0;
-			let amount = data[i].amount;
-			if (amount.includes('T')) {
-				storage = parseFloat(amount.replace('T', ''));
+			let size = data[i].size;
+			if (size.includes('T')) {
+				storage = parseFloat(size.replace('T', ''));
 			}
-			if (amount.includes('G')) {
-				storage = parseFloat(amount.replace('G', '')) / 1000;
+			if (size.includes('G')) {
+				storage = parseFloat(size.replace('G', '')) / 1000;
 			}
-			if (amount.includes('M')) {
-				storage = parseFloat(amount.replace('M', '')) / 1000000;
+			if (size.includes('M')) {
+				storage = parseFloat(size.replace('M', '')) / 1000000;
 			}
 			total += storage;
-			amounts.push(storage);
+			sizes.push(storage);
 		}
 		if (this.show_other) {
-			amounts.push(14 - total);
+			sizes.push(14 - total);
 		}
-		return amounts;
+		return sizes;
 	}
 
 	//
@@ -116,7 +113,7 @@ class StorageChart {
 	render() {
 		const data = [{
 			labels: this.getDirectoryNames(this.data),
-			values: this.getStorageAmounts(this.data),
+			values: this.getStorageSizes(this.data),
 			type: 'pie',
 			hovertemplate: '%{label}<br />%{value} TB<br />(%{percent})<extra></extra>'
 		}];

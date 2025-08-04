@@ -1,0 +1,62 @@
+/******************************************************************************\
+|                                                                              |
+|                                  styles.css                                  |
+|                                                                              |
+|******************************************************************************|
+|                                                                              |
+|        This defines the visual styles used in this application.              |
+|                                                                              |
+|        Author(s): Abe Megahed                                                |
+|                                                                              |
+|        This file is subject to the terms and conditions defined in           |
+|        'LICENSE.md', which is part of this source code distribution.         |
+|                                                                              |
+|******************************************************************************|
+|     Copyright (C) 2025, Data Science Institute, University of Wisconsin      |
+\******************************************************************************/
+
+body {
+	--primary-color: #c5050c;
+	--primary-hover-color: #900000;
+}
+
+.header {
+	color: white;
+	background-color: var(--primary-color);
+}
+
+.title {
+	color: var(--primary-color);
+}
+
+svg .infolayer text {
+	fill: var(--primary-color) !important;
+}
+
+a {
+	color: var(--primary-color);
+
+	&:hover {
+		color: var(--primary-hover-color);
+	}
+}
+
+.nav-tabs {
+	li a {
+		color: grey !important;
+	}
+
+	li.active {
+		a, 
+		a:focus,
+		a:hover {
+			color: white !important;
+			background: var(--primary-color);
+			border-color: var(--primary-color);
+		}
+	}
+}
+
+.footer {
+	background: #f0f0f0;
+}

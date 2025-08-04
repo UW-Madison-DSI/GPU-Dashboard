@@ -11,9 +11,15 @@
 		<!-- system styles -->
 		<link rel="stylesheet" type="text/css" href="vendor/bootstrap/dist/css/bootstrap.css" />
 
-		<!-- custom styles -->
+		<!-- font styles -->
 		<link rel="stylesheet" type="text/css" href="fonts/red-hat-text/styles.css" />
+		<link rel="stylesheet" type="text/css" href="fonts/red-hat-display/styles.css" />
+		<link rel="stylesheet" type="text/css" href="fonts/fontawesome-6.6.0/css/all.min.css" />
+
+		<!-- custom styles -->
 		<link rel="stylesheet" type="text/css" href="styles/styles.css" />
+		<link rel="stylesheet" type="text/css" href="styles/theme.css" />
+		<link rel="stylesheet" type="text/css" href="styles/dark-theme.css" />
 
 		<!-- system scripts -->
 		<script type="text/javascript" src="library/jquery/jquery-3.6.0.js"></script>
@@ -21,30 +27,69 @@
 		<script type="text/javascript" src="vendor/bootstrap/js/tab.js"></script>
 
 		<!-- custom scripts -->
-		<script type="text/javascript" src="scripts/gpu-chart.js"></script>
-		<script type="text/javascript" src="scripts/cpu-chart.js"></script>
+		<script type="text/javascript" src="scripts/gpu-usage-chart.js"></script>
+		<script type="text/javascript" src="scripts/gpu-memory-chart.js"></script>
+		<script type="text/javascript" src="scripts/gpu-load-chart.js"></script>
+		<script type="text/javascript" src="scripts/gpu-temp-chart.js"></script>
+		<script type="text/javascript" src="scripts/gpu-power-chart.js"></script>
+		<script type="text/javascript" src="scripts/cpu-load-chart.js"></script>
+		<script type="text/javascript" src="scripts/memory-chart.js"></script>
 		<script type="text/javascript" src="scripts/storage-chart.js"></script>
+		<script type="text/javascript" src="scripts/main.js"></script>
 	</head>
 
 	<body>
 		<div class="header">
-			<img class="logo" src="images/olvi-logo.jpg">
-			<h1 class="title">Olvi Resources Dashboard</h1>
+			<div class="brand">
+				UNIVERSITY of WISCONSIN-MADISON
+			</div>
+			<button id="theme" class="btn btn-sm">
+				<i class="fa fa-paintbrush"></i>
+			</button>
+		</div>
+		<div class="header-bar">
+			<img class="logo" src="images/olvi-logo.png">
+			<h1 class="title">Olvi Dashboard</h1>
 
 			<ul class="nav nav-tabs" role="tablist">
-				
-				<li role="presentation" class="gpu-memory-tab active">
-					<a role="tab" data-toggle="tab" href=".gpu-memory.tab-pane">
+
+				<li role="presentation" class="gpu-usage-tab active">
+					<a id="gpu-usage" role="tab" data-toggle="tab" href=".gpu-usage.tab-pane">
+						<label>GPU Usage</label>
+					</a>
+				</li>			
+				<li role="presentation" class="gpu-memory-tab">
+					<a id="gpu-memory" role="tab" data-toggle="tab" href=".gpu-memory.tab-pane">
 						<label>GPU Memory</label>
 					</a>
 				</li>
+				<li role="presentation" class="gpu-load-tab">
+					<a id="gpu-load" role="tab" data-toggle="tab" href=".gpu-load.tab-pane">
+						<label>GPU Load</label>
+					</a>
+				</li>
+				<li role="presentation" class="gpu-temp-tab">
+					<a id="gpu-temp" role="tab" data-toggle="tab" href=".gpu-temp.tab-pane">
+						<label>GPU Temp</label>
+					</a>
+				</li>
+				<li role="presentation" class="gpu-power-tab">
+					<a id="gpu-power" role="tab" data-toggle="tab" href=".gpu-power.tab-pane">
+						<label>GPU Power</label>
+					</a>
+				</li>
 				<li role="presentation" class="cpu-load-tab">
-					<a role="tab" data-toggle="tab" href=".cpu-load.tab-pane">
+					<a id="cpu-load" role="tab" data-toggle="tab" href=".cpu-load.tab-pane">
 						<label>CPU Load</label>
 					</a>
 				</li>
 				<li role="presentation" class="storage-tab">
-					<a role="tab" data-toggle="tab" href=".storage.tab-pane">
+					<a id="memory" role="tab" data-toggle="tab" href=".memory.tab-pane">
+						<label>Memory</label>
+					</a>
+				</li>
+				<li role="presentation" class="storage-tab">
+					<a id="storage" role="tab" data-toggle="tab" href=".storage.tab-pane">
 						<label>Storage</label>
 					</a>
 				</li>
@@ -54,162 +99,134 @@
 		<div class="tab-content">
 
 		<div class="charts container">
-			<div role="tabpanel" class="gpu-memory tab-pane active">
-				<div id="olvi-1-gpu-memory" class="chart"></div>
-				<div id="olvi-2-gpu-memory" class="chart"></div>
+
+			<div role="tabpanel" class="gpu-usage tab-pane active">
+				<div id="olvi-1-gpu-usage" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>				
+				</div>
+				<div id="olvi-2-gpu-usage" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
 			</div>
-			
+
+			<div role="tabpanel" class="gpu-memory tab-pane">
+				<div id="olvi-1-gpu-memory" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>				
+				</div>
+				<div id="olvi-2-gpu-memory" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+			</div>
+
+			<div role="tabpanel" class="gpu-load tab-pane">
+				<div id="olvi-1-gpu-load" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+				<div id="olvi-2-gpu-load" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+			</div>
+
+			<div role="tabpanel" class="gpu-temp tab-pane">
+				<div id="olvi-1-gpu-temp" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+				<div id="olvi-2-gpu-temp" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+			</div>
+
+			<div role="tabpanel" class="gpu-power tab-pane">
+				<div id="olvi-1-gpu-power" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+				<div id="olvi-2-gpu-power" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+			</div>
+
 			<div role="tabpanel" class="cpu-load tab-pane">
-				<div id="olvi-1-cpu-load" class="chart"></div>
-				<div id="olvi-2-cpu-load" class="chart"></div>
+				<div id="olvi-1-cpu-load" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>				
+				</div>
+				<div id="olvi-2-cpu-load" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>				
+				</div>
+			</div>
+
+			<div role="tabpanel" class="memory tab-pane">
+				<div id="olvi-1-memory" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+				<div id="olvi-2-memory" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
 			</div>
 
 			<div role="tabpanel" class="storage tab-pane">
-				<div id="olvi-1-storage" class="chart"></div>
-				<div id="olvi-2-storage" class="chart"></div>
+				<select class="selector">
+					<option value="0">All Files</option>
+					<option value="30">Files Older Than 1 Month</option>
+					<option value="90">Files Older Than 3 Months</option>
+					<option value="180">Files Older Than 6 Months</option>
+				</select>
+				<div id="olvi-1-storage" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
+				<div id="olvi-2-storage" class="tab-panel">
+					<div class="chart"></div>
+					<div class="updated">
+						Updated <span class="date"></span>
+					</div>
+				</div>
 			</div>
 		</div>
 
-		<div class="well">Resource utilization of the <a href="https://dsi.wisc.edu/services/gpu/olvi/">Olvi GPU Cluster</a> at the <a href="https://dsi.wisc.edu/">Data Science Institute</a> at the <a href="https://www.wisc.edu/">University of Wisconsin-Madison</a> <span class="date"></span>. </div>
-
-		<script>
-			let server = 'http://localhost:5000';
-
-			// allow cross domain requests
-			//
-			$.support.cors = true;
-
-			function showDate(date) {
-				$('.date').text('at ' + date.toLocaleTimeString() + ' on ' + date.toLocaleDateString());
-			}
-
-			function getDataByHost(data, host) {
-				let items = [];
-				for (let i = 0; i < data.length; i++) {
-					let item = data[i];
-					if (item.host == host) {
-						items.push(item);
-					}
-				}
-				return items;
-			}
-
-			function showGpuCharts(data) {
-				let olvi1Data = getDataByHost(data, 'olvi-1');
-				let olvi2Data = getDataByHost(data, 'olvi-2');
-
-				// gpu charts
-				//
-				let olvi1GpuChart = new GpuChart({
-					title: 'Olvi-1 GPU Memory',
-					element: $('#olvi-1-gpu-memory')[0],
-					data: olvi1Data
-				});
-				let olvi2GpuChart = new GpuChart({
-					title: 'Olvi-2 GPU Memory',
-					element: $('#olvi-2-gpu-memory')[0],
-					data: olvi2Data
-				});
-
-				// cpu charts
-				//
-				let olvi1CpuChart = new CpuChart({
-					title: 'Olvi-1 CPU Load',
-					element: $('#olvi-1-cpu-load')[0],
-					data: olvi1Data
-				});
-				let olvi2CpuChart = new CpuChart({
-					title: 'Olvi-2 CPU Load',
-					element: $('#olvi-2-cpu-load')[0],
-					data: olvi2Data
-				});
-			}
-
-			function showStorageCharts(data) {
-				let olvi1Data = getDataByHost(data, 'olvi-1');
-				let olvi2Data = getDataByHost(data, 'olvi-2');
-
-				// storage charts
-				//
-				let olvi1StorageChart = new StorageChart({
-					title: 'Olvi-1 Storage',
-					element: $('#olvi-1-storage')[0],
-					data: olvi1Data
-				});
-				let olvi2StorageChart = new StorageChart({
-					title: 'Olvi-2 Storage',
-					element: $('#olvi-2-storage')[0],
-					data: olvi2Data
-				});
-			}
-
-			function fetchGpuData(options) {
-
-				// fetch gpu data
-				//
-				$.ajax({
-					url: server + '/gpus/latest',
-					type: 'GET',
-					crossDomain: true,
-					headers: {
-						"Access-Control-Allow-Origin": "*"
-					},
-
-					// callbacks
-					//
-					success: options.success
-				});
-			}
-
-			function fetchStorageData(options) {
-
-				// fetch gpu data
-				//
-				$.ajax({
-					url: server + '/storage/latest',
-					type: 'GET',
-					crossDomain: true,
-					headers: {
-						"Access-Control-Allow-Origin": "*"
-					},
-
-					// callbacks
-					//
-					success: options.success
-				});
-			}
-
-			// start
-			//
-			window.onload = function() {
-
-				// fetch and show data
-				//
-				this.fetchGpuData({
-
-					// callbacks
-					//
-					success: (data) => {
-						showGpuCharts(data);
-
-						// show date
-						//
-						if (data.length > 0) {
-							let date = new Date(data[0].created_at);
-							this.showDate(date);
-						}
-
-						this.fetchStorageData({
-
-							// callbacks
-							//
-							success: (data) => {
-								showStorageCharts(data)
-							}
-						});
-					}
-				});
-			}
-		</script>
+		<div class="footer">Resource utilization of the <a href="https://dsi.wisc.edu/services/gpu/olvi/">Olvi GPU Cluster</a> at the <a href="https://dsi.wisc.edu/">Data Science Institute</a> at the <a href="https://www.wisc.edu/">University of Wisconsin-Madison</a>.</div>
 	</body>
 </html>

@@ -19,18 +19,53 @@ body {
 	display: flex;
 	flex-direction: column;
 	font-family: 'Red Hat Text', sans-serif;
-	padding: 20px;
-	--primary-color: #c00000;
-	--primary-hover-color: #900000;
 	position: absolute;
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
+	font-size: 14px;
 }
 
 .header {
-	text-align: center;
+	display: flex;
+	height: 35px;
+
+	.brand {
+		font-size: 13.2px;
+		margin: auto;
+		margin-left: 15px;
+	}
+}
+
+.header-bar {
+	padding: 20px;
+
+	.title {
+		font-family: 'Red Hat Display', sans-serif;
+		font-size: 30px;
+		font-weight: bold;
+	}
+}
+
+.btn {
+	i {
+		color: black;
+		margin: 0;
+		font-size: 1.25em;
+		line-height: 1.25em;
+	}
+
+	&:focus {
+		outline: none !important;
+	}
+}
+
+.btn-sm {
+	width: 30px;
+	height: 30px;
+	padding: 0;
+	margin: auto 10px
 }
 
 .logo {
@@ -45,15 +80,26 @@ body {
 	text-align: center;
 	float: left;
 	margin: 0 20px;
-	margin-right: 40px;
-	color: var(--primary-color);
+	margin-left: 10px;
+}
+
+.tab-panel {
+	display: flex;
+	flex-direction: column;
+	width: 50%;
+	height: 100%;
+	margin: auto;
+	float: left;
 }
 
 .chart {
-	display: inline-block;
-	width: 50%;
-	margin: auto;
-	float: left;
+	width: 100%;
+	flex-grow: 1;
+}
+
+.updated {
+	text-align: center;
+	margin: 10px;
 }
 
 .pie.chart {
@@ -62,32 +108,12 @@ body {
 	margin: auto;
 }
 
-svg .infolayer text {
-	fill: var(--primary-color) !important;
-}
-
-.well {
+.footer {
 	text-align: center;
-	margin-bottom: 0;
-}
-
-a {
-	color: var(--primary-color);
-
-	&:hover {
-		color: var(--primary-hover-color);
-	}
-}
-
-.nav-tabs {
-
-	li a {
-		color: grey !important;
-	}
-
-	li.active a {
-		color: var(--primary-color) !important;
-	}
+	padding: 10px;
+	margin: 0;
+	border: none;
+	border-radius: 0;
 }
 
 .tab-content {
@@ -128,5 +154,29 @@ a {
 				height: 100%;
 			}
 		}
+	}
+}
+
+.tab-pane {
+	> select {
+		position: fixed;
+		left: 50%;
+		margin-left: -75px;
+		z-index: 1;
+	}
+}
+
+a {
+	text-decoration: underline;
+}
+
+.nav-tabs {
+	li a {
+		padding: 10px;
+		margin-right: 0;
+	}
+
+	li.active a:focus {
+		outline: none;
 	}
 }

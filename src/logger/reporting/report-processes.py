@@ -18,13 +18,7 @@
 import requests
 import platform
 import subprocess
-
-#
-# variables
-#
-
-# url = 'https://olvi-dashboard-api.services.dsi.wisc.edu'
-url = 'http://localhost:5000'
+from config import url
 
 #
 # functions

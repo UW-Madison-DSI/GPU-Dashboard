@@ -20,16 +20,10 @@ import requests
 from report_storage import run_command
 from report_storage import get_largest_directories
 from report_storage import get_free_space
+from config import url
 
 #
-# variables
-#
-
-# url = 'https://olvi-dashboard-api.services.dsi.wisc.edu'
-url = 'http://localhost:5000'
-
-#
-# directory size getting functions
+# functions
 #
 
 def get_directory_size_younger_than(directory, max_days_old):

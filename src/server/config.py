@@ -18,7 +18,7 @@ PORT = 5000
 # SSL_KEY = '<Path to your cert private key file here>'
 DEBUG = True
 
-DB_HOST = 'localhost'
+DB_HOST = 'db'
 DB_PORT = 3306
 DB_USERNAME = 'root'
 DB_PASSWORD = 'root'
